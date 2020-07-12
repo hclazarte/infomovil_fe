@@ -1,0 +1,226 @@
+*
+{
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+	outline: none;
+}
+
+body
+{
+  background-color: #fbfbfb;
+  overflow : hidden;
+  font: 14px Arial, Helvetica, sans-serif;
+}
+
+.topBar
+{
+	color: #fbfbfb;
+	background-color:#527DD6;
+	border-radius: 8px;
+	width: 100%;
+	height:52px;
+	top:0px;
+	left:0px;
+	z-index: -5;
+}
+
+.iconCell
+{
+	table-layout:fixed;
+  width:52px;
+  overflow:hidden;
+	word-wrap:break-word;
+	text-align: center;
+	border: none;
+}
+
+.inicio
+{
+	width: auto;
+	height: auto;
+	margin-left:auto;
+	margin-right:auto;
+	background-color:#c3cce9;
+	cursor:pointer;
+	overflow-y: auto;
+}
+
+.inicio_titulo
+{
+	text-align: center;
+	font-family: 'Caveat', serif; font-size: 36px;
+}
+.inicio_contenido
+{
+	font: 12px Arial, Helvetica, sans-serif;
+	text-align: justify;
+	padding-left:12px;
+	padding-right:12px;
+	overflow-y: auto;
+}
+
+.headerButton
+{
+	width: 48px;
+	height: 48px;
+	background-color:#527DD6;
+	border-width: 0px;
+}
+
+.svgIcon
+{
+	fill:white;
+	cursor: pointer;
+}
+
+.svgIcon:hover
+{
+	fill: silver;
+	transform: scale(1.1);
+}
+
+.searchInput
+{
+	border-radius: 8px;
+	border-color: white;
+	width: 94%;
+	height: 28px;
+	z-index: 5;
+	opacity: 0.7;
+	padding-left: 2%;
+	padding-right: 2%;
+}
+
+.searchInput:focus
+{
+	opacity: 1;
+}
+
+.screenReaderText
+{
+	position: absolute;
+	top: 20px;
+	left: 80px;
+	color: black;
+}
+
+/* Asycronios Wait */
+.unlockScreen
+{
+	position: absolute;
+	visibility: hidden;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 20;
+	background-color: #fbfbfb;
+	background: rgba(64, 64, 64, 0.3);
+}	
+
+.lockScreen
+{
+	position: absolute;
+	visibility: visible;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 20;
+	background-color: #fbfbfb;
+	background: rgba(64, 64, 64, 0.3)
+}
+
+/* Side Menu */
+.hamMenuCanvasHide
+{
+	position: absolute;
+	visibility: hidden;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 10;
+	background-color: #fbfbfb;
+	background: rgba(64, 64, 64, 0.3);
+}	
+
+.tb
+{
+	width: 100%;
+	height: 100%;
+}
+
+.scapeArea
+{
+	width: 30%;
+	height: 100%;
+}
+.hamMenuCanvasShown
+{
+	position: absolute;
+	visibility: visible;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 10;
+	background-color: #fbfbfb;
+	background: rgba(64, 64, 64, 0.3)
+}
+
+.hamMenu
+{ 
+	position: relative;
+	float:left;
+	background-color: #457aD3;
+	width: 100%;
+	height: 100%;
+	border-right: 1px solid #b4c9ec;
+	text-align: left;
+}
+
+.hamMenuDiv
+{
+	background-color:#3a6dd3;
+	color: white;
+	border-bottom:1px solid #b4c9ec;
+	padding: 12px 12px 12px 12px;
+	font: 16px Arial, Helvetica, sans-serif;
+}
+
+.hamMenuSep
+{
+	height: 14px;
+	border-bottom:1px solid #b4c9ec;
+}
+
+.hamMenuDiv:hover
+{
+	background-color: #4776d3;
+}
+
+.hamMenu a
+{
+	color: white;
+	text-decoration: none;
+}
+
+.hamMenu a:visited
+{
+	text-decoration: none;
+}
+
+.hamMenuIcon
+{
+	fill:white;
+	cursor: pointer;
+	padding: 0px 20px 0px 20px;
+}
+
+/* Waiti cursor */ 
+.waitCambas
+{
+
+}
