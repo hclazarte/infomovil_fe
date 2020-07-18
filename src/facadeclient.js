@@ -1,13 +1,12 @@
 export var FacadeClient = {
 
-  baseUrl: "http://www.infomovil.com.bo/Servicios.asmx",
-  xmlns: "http://tempuri.org/",
+  baseUrl: "http://infomovil.shop/fachada/servicios.asmx",
+  xmlns: "http://infomovil.com.bo/",
   Services: {
-    RecuperaCiudad: {name:'RecuperaCiudad', type:'Ciudade'},
-    RecuperaInfoPath: {name:'RecuperaInfoPath', type:'RecuperaInfoPathResponse'},
-    RecuperaTablaBuscarCiudades:{name:'RecuperaTablaBuscarCiudades', type:'TablaBuscarRow'},
-    RecuperaTablaBuscarCodigos_comercio: {name:'RecuperaTablaBuscarCodigos_comercio', type:'TablaBuscarRow'},
-    RecuperaTablaBuscarZonasActivas: {name:'RecuperaTablaBuscarZonasActivas', type:'TablaBuscarRow'}
+    UsRecuperaCiudad: {name:'UsRecuperaCiudad', type:'Ciudade'},
+    UsRecuperaTodosCiudades:{name:'UsRecuperaTodosCiudades', type:'Ciudade'},
+    UsRecuperaTablaBuscarCodigos_comercio: {name:'UsRecuperaTablaBuscarCodigos_comercio', type:'TablaBuscarRow'},
+    UsRecuperaTablaBuscarZonasActivas: {name:'UsRecuperaTablaBuscarZonasActivas', type:'TablaBuscarRow'}
   }
 };
 
@@ -26,10 +25,10 @@ FacadeClient.RunService = (service, parameters, ejemplo, xmlns_ = FacadeClient.x
       if (res.ok) {
         return res.text();
       } else {
-        return "Error: no se encuentra el servidor, reintente";
+        return "Error: no se encuentra el servidor, por favor reintente";
       }
     }).then( xml_text => {
-      if (xml_text === "Error: no se encuentra el servidor, reintente") {
+      if (xml_text === "Error: no se encuentra el servidor, por favor reintente") {
         when_err(xml_text);
       } else {
         let parser = new DOMParser();

@@ -3,39 +3,37 @@ import React from "react";
 class SearchForm extends React.Component{
   constructor(props){
     super(props);
-    let msg = 'Busca en ' + props.ciudad + ', ' + props.pais;
 
-    this.state = {txt_busqueda: '', msg: msg};
+    this.state = {txt_busqueda: '', msg: 'Busca en...'};
     this.onSearchChange = this.onSearchChange.bind(this);
   }
   render() {
     return (
       <div className="searchForm" >
-        <label id="screenReaderText" className="screenReaderText">{this.state.msg}</label>
-        <input  className="searchInput" autoFocus 
+        <input id="searchInput" className="searchInput" autoFocus 
                 value={this.state.txt_busqueda} 
                 onChange={this.onSearchChange}
-                ref = {(input)=>{this.searchInput = input}}>
+                ref = {(input)=>{this.searchInput = input}}
+                placeholder={this.state.msg}>
         </input>
       </div>
     );
   }
-  componentWillReceiveProps(props) {
-    let msg = 'Busca en ' + props.ciudad + ', ' + props.pais;
-    this.setState({txt_busqueda:this.state.txt_busqueda, msg: msg})
+  UNSAFE_componentWillReceiveProps(props) {
+    let msg = '';
+    if (this.props.ciudad.length===0){
+      msg = 'Busca en...';
+    } else {
+      msg = 'Busca en ' + this.props.ciudad.CIUDAD + ', ' + this.props.ciudad.PAIS;
+    }
+    this.setState({msg: msg})
     }
   componentDidMount(){
     this.searchInput.focus();
   }
   onSearchChange(event){
-    let txt = event.target.value;
-    let msg = 'Busca en ' + this.props.ciudad + ', ' + this.props.pais;
-    if (txt !== '') {
-      this.setState({txt_busqueda:txt, msg: ''});
-    }
-    else {
-      this.setState({txt_busqueda:txt, msg: msg});
-    }
+    this.setState({txt_busqueda: event.target.value})
+    this.props.onSearchTextChanged(event.target.value);
   }
 }
 export default SearchForm;
