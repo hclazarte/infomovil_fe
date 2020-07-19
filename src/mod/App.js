@@ -127,27 +127,29 @@ class App extends React.Component {
   render() {
     return (
       <Router>
-        <div id="main">
+        <div className="main">
           <div className={this.state.lockScreen}>
             <img className="waitingImg" src={wait_img} width="100px"  height="100px" alt="Cargando..."></img>
           </div>
-          <table className="topBar">
-            <tbody>
-              <tr>
-                <td className="iconCell">
-                  <SidebarMenu onCiudadChanged={this.onCiudadChanged} onZonaChanged={this.onZonaChanged} onCategoriaChanged={this.onCategoriaChanged}
-                  ciudad={this.state.ciudad} ciudades={this.state.ciudades} codigos_comercio={this.state.codigos_comercio} zonas_activas={this.state.zonas_activas}/>
-                </td>
-                <td>
-                  <SearchForm onSearchTextChanged={this.onSearchTextChanged} ciudad={this.state.ciudad}/>
-                </td>
-                <td className="iconCell">
-                  <Link to={this.linkBuilder()}><SearchIcon onSearchClick={this.onSearchClick}/></Link>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div id="content">
+          <div className="topBarDiv">
+            <table className="topBar">
+              <tbody>
+                <tr>
+                  <td className="iconCell">
+                    <SidebarMenu onCiudadChanged={this.onCiudadChanged} onZonaChanged={this.onZonaChanged} onCategoriaChanged={this.onCategoriaChanged}
+                    ciudad={this.state.ciudad} ciudades={this.state.ciudades} codigos_comercio={this.state.codigos_comercio} zonas_activas={this.state.zonas_activas}/>
+                  </td>
+                  <td>
+                    <SearchForm onSearchTextChanged={this.onSearchTextChanged} ciudad={this.state.ciudad}/>
+                  </td>
+                  <td className="iconCell">
+                    <Link to={this.linkBuilder()}><SearchIcon onSearchClick={this.onSearchClick}/></Link>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="contenido">
             {this.renderError()}
             {this.renderRoute()}
           </div>
