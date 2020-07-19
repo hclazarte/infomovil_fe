@@ -196,6 +196,7 @@ class SidebarMenu extends React.Component {
   }
   onCiudadChanged(event){
     let selected = this.state.ciudades.filter((ciudad) => {return ciudad.ID == event.target.value})[0];
+    this.setState({zna_id:'0', cga_id: '0'});
     this.setState({ciudad: selected});
     this.props.onCiudadChanged(selected);
   }

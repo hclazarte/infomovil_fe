@@ -96,21 +96,28 @@ class App extends React.Component {
     }
 
     this.linkBuilder = () => {
-      let aux = '/'+this.state.ciudad.PAIS+'/'+this.state.ciudad.CIUDAD;
+      let aux = '';
+      if (this.state.ciudad.PAIS !== undefined) {
+        aux += '/'+this.state.ciudad.PAIS.split(' ').join('-')+'/'+this.state.ciudad.CIUDAD.split(' ').join('-');
+      }
       if (this.state.zna_id !== undefined && this.state.zna_id !== '' && this.state.zna_id !== '0') {
-        let zona = this.state.zonas_activas.filter((zona) => {return zona.ID === this.state.zna_id})[0];
-        aux += '/' + zona.DESCRIPCION;
+        let zona = this.state.zonas_activas.filter((zona) => {return zona.ID === this.state.zna_id});
+        if (zona.length > 0){
+          aux += '/' + zona[0].DESCRIPCION.split(' ').join('-');
+        }
       }
       if (this.state.cga_id !== undefined && this.state.cga_id !== '' && this.state.cga_id !== '0') {
-        let categoria = this.state.codigos_comercio.filter((categoria) => {return categoria.ID === this.state.cga_id})[0];
-        let str = categoria.DESCRIPCION;
-        if (str.substr(0,3) === ' - ') {
-          str = str.substr(3, str.length);
+        let categoria = this.state.codigos_comercio.filter((categoria) => {return categoria.ID === this.state.cga_id});
+        if (categoria.length > 0) {
+          let str = categoria[0].DESCRIPCION;
+          if (str.substr(0,3) === ' - ') {
+            str = str.substr(3, str.length);
+          }
+          aux += '/' + str.split(' ').join('-');
         }
-        aux += '/' + str;
       }
       if (this.state.txt_busqueda !== '') {
-        aux += '/' + this.state.txt_busqueda;
+        aux += '/' + this.state.txt_busqueda.split(' ').join('-');
       }
       return aux;
     }
