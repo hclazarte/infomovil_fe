@@ -20,7 +20,7 @@ class App extends React.Component {
   constructor(props){
     super(props);
     this.state = {txt_error: '', redirect:false, lockScreen: "lockScreen", ciudad:[], ciudades: [], codigos_comercio: [], 
-                  zonas_activas: [], zna_id:'0', cga_id: '0', txt_busqueda: ''};
+                  zonas_activas: [], zna_id:'0', cga_id: '0', txt_busqueda: '', path: undefined};
 
     this.renderError = () => {
       if (this.state.redirect) {
@@ -45,7 +45,7 @@ class App extends React.Component {
               <Error />
             </Route>
             <Route path="/:id">
-              <Search ciudad={this.state.ciudad}></Search>
+              <Search path={this.state.path}></Search>
             </Route>
           </Switch>)
       }
@@ -121,13 +121,15 @@ class App extends React.Component {
       }
       return aux;
     }
+
+    this.onSearchClick = this.onSearchClick.bind(this);
   }
   render() {
     return (
       <Router>
         <div id="main">
           <div className={this.state.lockScreen}>
-            <img className="waitingImg" src={wait_img} width="100px"  height="100px" alt="Esperando..."></img>
+            <img className="waitingImg" src={wait_img} width="100px"  height="100px" alt="Cargando..."></img>
           </div>
           <table className="topBar">
             <tbody>
@@ -140,7 +142,7 @@ class App extends React.Component {
                   <SearchForm onSearchTextChanged={this.onSearchTextChanged} ciudad={this.state.ciudad}/>
                 </td>
                 <td className="iconCell">
-                  <Link to={this.linkBuilder()}><SearchIcon/></Link>
+                  <Link to={this.linkBuilder()}><SearchIcon onSearchClick={this.onSearchClick}/></Link>
                 </td>
               </tr>
             </tbody>
@@ -152,6 +154,9 @@ class App extends React.Component {
         </div>
       </Router>
     );
+  }
+  onSearchClick() {
+    this.setState({path: this.linkBuilder()})
   }
   componentDidMount(){
     let parametros = {mensaje: '', strCiudad: ''};

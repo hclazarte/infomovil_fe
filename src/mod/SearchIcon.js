@@ -1,6 +1,11 @@
 import React from "react";
 
 class SearchIcon extends React.Component {
+  constructor (props){
+    super(props);
+
+    this.onSearchClick = this.onSearchClick.bind(this);
+  }
   render() {
     return (
       <button className="headerButton" onClick={this.onSearchClick}>
@@ -12,7 +17,7 @@ class SearchIcon extends React.Component {
     );
   }
   onSearchClick() {
-    
+    this.props.onSearchClick();
   }
 }
 

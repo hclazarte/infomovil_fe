@@ -5,7 +5,6 @@ class Error extends React.Component{
   constructor(props){
     super(props);
 
-    console.log(props);
     this.state = {txt_error: props.txt_error};
   }
   render() {
