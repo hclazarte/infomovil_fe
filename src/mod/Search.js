@@ -1,5 +1,4 @@
 import React from "react";
-import {FacadeClient} from '../facadeclient';
 
 class Search  extends React.Component {
   constructor(props){

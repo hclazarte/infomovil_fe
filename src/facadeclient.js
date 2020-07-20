@@ -15,7 +15,7 @@ FacadeClient.RunService = (service, parameters, ejemplo, xmlns_ = FacadeClient.x
   let soapMessage = FacadeClient.SoapWrap(service.name, parameters, ejemplo, xmlns_);
   
   let hd = new Headers();
-  hd.append('Content-Type', 'text/xml');
+  hd.append('Content-Type', 'text/xml; charset=utf-8');
   
   fetch(FacadeClient.baseUrl + "?op=" + service.name, {
     method: 'POST',
@@ -36,7 +36,11 @@ FacadeClient.RunService = (service, parameters, ejemplo, xmlns_ = FacadeClient.x
         let response = xmlDoc.getElementsByTagName(service.name + "Response")[0]
         let arrObjs = FacadeClient.Deserialize(response,service.type);
         if (typeof(arrObjs) === 'string'){
-          when_err(arrObjs);
+          if ( arrObjs === 'Negocio: No existen datos para la consulta') {
+            when_fetched([]);
+          } else {
+            when_err(arrObjs);
+          }
         }
         else{
           when_fetched(arrObjs);

@@ -1,5 +1,4 @@
 import React from "react";
-import {FacadeClient} from '../facadeclient';
 import {
   Link
 } from "react-router-dom";
@@ -195,7 +194,7 @@ class SidebarMenu extends React.Component {
     this.setState({style: "hamMenuCanvasHide"});
   }
   onCiudadChanged(event){
-    let selected = this.state.ciudades.filter((ciudad) => {return ciudad.ID == event.target.value})[0];
+    let selected = this.state.ciudades.filter((ciudad) => {return ciudad.ID === event.target.value})[0];
     this.setState({zna_id:'0', cga_id: '0'});
     this.setState({ciudad: selected});
     this.props.onCiudadChanged(selected);
@@ -209,8 +208,9 @@ class SidebarMenu extends React.Component {
     this.props.onCategoriaChanged(event.target.value);
   }
   UNSAFE_componentWillReceiveProps(props) {
-    this.setState({ciudad: props.ciudad, ciudades: props.ciudades, codigos_comercio: props.codigos_comercio, 
-                   zonas_activas: props.zonas_activas, zna_id: props.zna_id, cga_id: props.cga_id});
+    this.setState({ciudad: props.ciudad, ciudades: props.ciudades, 
+                   codigos_comercio: props.codigos_comercio, cga_id: props.cga_id,
+                   zonas_activas: props.zonas_activas, zna_id: props.zna_id});
   }
 }
 
