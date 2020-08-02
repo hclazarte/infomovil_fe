@@ -1,12 +1,15 @@
 export var FacadeClient = {
 
-  baseUrl: "http://infomovil.shop/fachada/servicios.asmx",
+  // baseUrl: "http://infomovil.shop/fachada/servicios.asmx",
+  baseUrl: "http://192.168.1.205/Fachada/Servicios.asmx",
   xmlns: "http://infomovil.com.bo/",
   Services: {
-    UsRecuperaCiudad: {name:'UsRecuperaCiudad', type:'Ciudade'},
-    UsRecuperaTodosCiudades:{name:'UsRecuperaTodosCiudades', type:'Ciudade'},
-    UsRecuperaTablaBuscarCodigos_comercio: {name:'UsRecuperaTablaBuscarCodigos_comercio', type:'TablaBuscarRow'},
-    UsRecuperaTablaBuscarZonasActivas: {name:'UsRecuperaTablaBuscarZonasActivas', type:'TablaBuscarRow'}
+    UsRecuperaCiudad: {name:'UsRecuperaCiudad', array_types:['Ciudade']},
+    UsRecuperaTodosCiudades:{name:'UsRecuperaTodosCiudades', array_types:['Ciudade']},
+    UsRecuperaTablaBuscarCodigos_comercio: {name:'UsRecuperaTablaBuscarCodigos_comercio', array_types:['TablaBuscarRow']},
+    UsRecuperaTablaBuscarZonasActivas: {name:'UsRecuperaTablaBuscarZonasActivas', array_types:['TablaBuscarRow']},
+    UsCuentaBusqueda: {name:'UsCuentaBusqueda'},
+    UsBuscaComercios: {name:'UsBuscaComercios', array_types:['Comercio']}
   }
 };
 
@@ -33,17 +36,34 @@ FacadeClient.RunService = (service, parameters, ejemplo, xmlns_ = FacadeClient.x
       } else {
         let parser = new DOMParser();
         let xmlDoc = parser.parseFromString(xml_text, 'text/xml');
-        let response = xmlDoc.getElementsByTagName(service.name + "Response")[0]
-        let arrObjs = FacadeClient.Deserialize(response,service.type);
-        if (typeof(arrObjs) === 'string'){
-          if ( arrObjs === 'Negocio: No existen datos para la consulta') {
-            when_fetched([]);
+        let response = xmlDoc.getElementsByTagName(service.name + "Response")[0];
+        
+        let objsRes = FacadeClient.Deserialize({},response,service);
+        
+        if (objsRes.mensaje === undefined)
+        {
+          when_err("Error: no se reconoce la respuesta del servidor");
+        } else {
+          if (objsRes.mensaje !== '')
+          {
+            if ( objsRes.mensaje === 'Negocio: No existen datos para la consulta') {
+              if (service.array_types !== undefined)
+              { // Agregando objeto vacio con array vacio cuando no hay registros de respuesta
+                if (Reflect.get(objsRes, service.name + 'Result') !== undefined) {
+                  Reflect.deleteProperty(objsRes, service.name + 'Result');
+                }
+                Reflect.defineProperty(objsRes, service.name + 'Result', {value: {}, writable: true});
+                Reflect.set(objsRes, service.name + 'Result', {value: {}});
+                let aux_obj = Reflect.get(objsRes, service.name + 'Result');
+                Reflect.defineProperty(aux_obj, service.array_types[0] , {value: [], writable: true});
+              }
+              when_fetched(objsRes);
+            } else {
+              when_err(objsRes.mensaje);
+            }
           } else {
-            when_err(arrObjs);
+            when_fetched(objsRes);
           }
-        }
-        else{
-          when_fetched(arrObjs);
         }
       }
     })
@@ -92,32 +112,53 @@ FacadeClient.Serialize = (businessObj)  => {
   return serie;
 }
 
-FacadeClient.Deserialize = (xmlDoc, type)  => {
-  let ObjArray = [];
+FacadeClient.Deserialize =  (obj, xmlDoc, service)  => {
   
-  let err = xmlDoc.getElementsByTagName("mensaje");
-  let aux = xmlDoc.getElementsByTagName(type);
+  var currentArrayTag = '';
+  var ObjArray = [];
   
-  if (err.length === 0) {
-    ObjArray = "Error: no se reconoce la respuesta del servidor";
-  } 
-  else {
-    if (err[0].innerHTML === '') {
-      for (let i = 0; i < aux.length; i++) {
-        ObjArray.push(FacadeClient.ObjDeserialize({},aux[i]));
-      }  
+  xmlDoc.childNodes.forEach(function(node) {
+    
+    if (FacadeClient.isArrayTag(service, node.tagName)) {
+      currentArrayTag = node.tagName;
+      ObjArray.push(FacadeClient.Deserialize({},node,service));
     }
     else {
-      ObjArray = err[0].innerHTML;
+      if (currentArrayTag !== '') {
+        Reflect.defineProperty(obj, currentArrayTag, { value: ObjArray})
+        currentArrayTag = '';
+        ObjArray = [];
+      }
+      if (FacadeClient.hasChildren(node)) {
+        Reflect.defineProperty(obj, node.tagName, { value: FacadeClient.Deserialize({},node,service), writable: true})
+      } else {
+        if (node.tagName !== service.name + 'Result' || !FacadeClient.isEmptyTag(node)) { 
+          //Para evitar que se cree string vacio cuando no hay respuesta
+          Reflect.defineProperty(obj, node.tagName, { value: node.innerHTML, writable: true })
+        }
+      }     
     }
+  })
+  if (currentArrayTag !== '') {
+    Reflect.defineProperty(obj, currentArrayTag, { value: ObjArray, writable: true})
   }
-
-  return ObjArray;
+  return obj;
 }
 
-FacadeClient.ObjDeserialize =  (obj, xmlDoc)  => {
-  xmlDoc.childNodes.forEach(function(node) {
-    Reflect.defineProperty(obj, node.tagName, { value: node.innerHTML })
-  })
-  return obj;
+FacadeClient.hasChildren = (node) => {
+  return (node.children.length > 0);
+}
+
+FacadeClient.isArrayTag = (service, value) => {
+  let ret_val = false;
+  if (service.array_types !== undefined) {
+    service.array_types.forEach(element => {
+      if (element === value) ret_val = true;
+    });  
+  }
+  return ret_val
+}
+
+FacadeClient.isEmptyTag = (node) => {
+  return (node.innerHTML ==='')
 }

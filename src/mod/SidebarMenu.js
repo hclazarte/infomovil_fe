@@ -207,10 +207,19 @@ class SidebarMenu extends React.Component {
     this.setState({cga_id: event.target.value});
     this.props.onCategoriaChanged(event.target.value);
   }
-  UNSAFE_componentWillReceiveProps(props) {
-    this.setState({ciudad: props.ciudad, ciudades: props.ciudades, 
-                   codigos_comercio: props.codigos_comercio, cga_id: props.cga_id,
-                   zonas_activas: props.zonas_activas, zna_id: props.zna_id});
+  static getDerivedStateFromProps(props, state) {    
+    if (props.ciudad !== state.ciudad ||
+        props.ciudades !== state.ciudades ||
+        props.codigos_comercio !== state.codigos_comercio ||
+        props.cga_id !== state.cga_id ||
+        props.zonas_activas !== state.zonas_activas ||
+        props.zna_id !== state.zna_id) {
+          
+      return {ciudad: props.ciudad, ciudades: props.ciudades, 
+              codigos_comercio: props.codigos_comercio, cga_id: props.cga_id,
+              zonas_activas: props.zonas_activas, zna_id: props.zna_id}; 
+    }
+    return null;
   }
 }
 

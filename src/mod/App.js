@@ -6,7 +6,7 @@ import Inicio from './Inicio';
 import Ayuda from './Ayuda';
 import Servicios from './Servicios';
 import Error from './Error';
-import Search from './Search';
+import SearchResult from './SearchResult';
 import {
   BrowserRouter as Router,
   Switch,
@@ -18,6 +18,13 @@ import {FacadeClient} from '../facadeclient';
 import wait_img from '../img/waiting2.gif'
 
 class App extends React.Component {
+  
+  counter = 0;
+  render_offset = 250;
+  grupo = 0;
+  gr_aux = 0;
+  gr_tam = 15;
+  intervalId =null;
   
   constructor(props){
     super(props);
@@ -45,7 +52,7 @@ class App extends React.Component {
               <Error />
             </Route>
             <Route path="/*">
-              <Search path={this.state.path}></Search>
+              <SearchResult comercios={this.state.comercios}></SearchResult>
             </Route>
           </Switch>)
       }
@@ -63,14 +70,14 @@ class App extends React.Component {
       let parametros = { mensaje: ''};
       let ejemplo = {ID_CDD: new_ciudad.ID};
       FacadeClient.RunService(FacadeClient.Services.UsRecuperaTablaBuscarCodigos_comercio, parametros, ejemplo, undefined, (obj) => {
-        obj.unshift({ID:"0", DESCRIPCION: "Todas las Categorías"});
-        this.setState({codigos_comercio: obj});
+        obj.UsRecuperaTablaBuscarCodigos_comercioResult.TablaBuscarRow.unshift({ID:"0", DESCRIPCION: "Todas las Categorías"});
+        this.setState({codigos_comercio: obj.UsRecuperaTablaBuscarCodigos_comercioResult.TablaBuscarRow});
 
         let parametros = {OrdenarPor: 'DESCRIPCION', mensaje: ''};
         let  ejemplo = {ID_CDD: new_ciudad.ID};
         FacadeClient.RunService(FacadeClient.Services.UsRecuperaTablaBuscarZonasActivas, parametros, ejemplo, undefined, (obj) => {
-          obj.unshift({ID:"0", DESCRIPCION: "Todas las Zonas"});
-          this.setState({zonas_activas: obj, lockScreen: "unlockScreen", redirect: false, txt_error: ''});
+          obj.UsRecuperaTablaBuscarZonasActivasResult.TablaBuscarRow.unshift({ID:"0", DESCRIPCION: "Todas las Zonas"});
+          this.setState({zonas_activas: obj.UsRecuperaTablaBuscarZonasActivasResult.TablaBuscarRow, lockScreen: "unlockScreen", redirect: false, txt_error: ''});
           
         }, (errMsg) => {  // error al recuperar las zonas activas
           if (errMsg === "Negocio: No existen datos para la consulta") {
@@ -98,10 +105,14 @@ class App extends React.Component {
     }
 
     this.onSearchTextChanged = (search_text) => {
-      this.setState({txt_busqueda: search_text});
+      let aux = this.linkBuilder(search_text);
+      this.setState({path: aux, txt_busqueda: search_text});
+      if (search_text.length > 1) {
+        this.counter = -10;
+      }
     }
     
-    this.linkBuilder = () => {
+    this.linkBuilder = (text = this.state.txt_busqueda) => {
       let aux = '';
       if (this.state.ciudad.PAIS !== undefined) {
         aux += '/'+this.state.ciudad.PAIS.split(' ').join('-')+'/'+this.state.ciudad.CIUDAD.split(' ').join('-');
@@ -122,23 +133,25 @@ class App extends React.Component {
           aux += '/' + str.split(' ').join('-');
         }
       }
-      if (this.state.txt_busqueda !== '') {
-        aux += '/' + this.state.txt_busqueda.split(' ').join('-');
+      if (text !== '') {
+        aux += '/' + text.split(' ').join('-');
       }
       return aux;
     }
 
     this.onSearchClick = this.onSearchClick.bind(this);
+    this.timer = this.timer.bind(this);
+    this.handleScroll = this.handleScroll.bind(this);
 
     this.state = {txt_error: '', redirect:false, lockScreen: "lockScreen", ciudad:[], ciudades: [], 
                   codigos_comercio: [], cga_id: '0', zonas_activas: [], zna_id:'0', txt_busqueda: '', 
-                  path: decodeURI(window.location.pathname)};
+                  path: decodeURI(window.location.pathname), comercios: undefined};
   }
   render() {
     return (
       <Router>
         {this.renderRedirect()}
-        <div className="main">
+        <div className="main" onScroll={this.handleScroll}>
           <div className={this.state.lockScreen}>
             <img className="waitingImg" src={wait_img} width="100px"  height="100px" alt="Cargando..."></img>
           </div>
@@ -156,7 +169,7 @@ class App extends React.Component {
                   </td>
                   <td>
                     <SearchBox onSearchTextChanged={this.onSearchTextChanged} 
-                                onEnterPress={this.onEnterPress} ciudad={this.state.ciudad}
+                                ciudad={this.state.ciudad}
                                 txt_busqueda={this.state.txt_busqueda}/>
                   </td>
                   <td className="iconCell">
@@ -176,37 +189,39 @@ class App extends React.Component {
   }
 
   componentDidMount(){
+    this.counter = 0;
+    this.intervalId = setInterval(this.timer, 100);
     let paths = this.state.path.split('/').filter((aux_p) => {return aux_p !== ''});
     
     let query_val = '';
     if (paths.length > 1) { query_val = unescape(paths[1]).split('-').join(' ');}   
     let parametros = {mensaje: '', strCiudad: query_val};
     FacadeClient.RunService(FacadeClient.Services.UsRecuperaCiudad, parametros, null, undefined, (obj) => {
-      this.setState({ciudad: obj[0]});
-      if (obj[0].CIUDAD.toLowerCase() === query_val.toLowerCase()) {paths.shift(); paths.shift();} 
+      this.setState({ciudad: obj.UsRecuperaCiudadResult.Ciudade[0]});
+      if (obj.UsRecuperaCiudadResult.Ciudade[0].CIUDAD.toLowerCase() === query_val.toLowerCase()) {paths.shift(); paths.shift();} 
       let parametros = {mensaje: '', OrdenarPor: 'CIUDAD'};
       FacadeClient.RunService(FacadeClient.Services.UsRecuperaTodosCiudades, parametros, null, undefined, (obj) => {
-        this.setState({ciudades: obj});
+        this.setState({ciudades: obj.UsRecuperaTodosCiudadesResult.Ciudade});
         
         let parametros = { mensaje: ''};
         let ejemplo = {ID_CDD: this.state.ciudad.ID};
         FacadeClient.RunService(FacadeClient.Services.UsRecuperaTablaBuscarZonasActivas, parametros, ejemplo, undefined, (obj) => {
           if (paths.length > 0) { query_val = unescape(paths[0]).split('-').join(' ');}
-          let selected = obj.filter((zna) => { 
+          let selected = obj.UsRecuperaTablaBuscarZonasActivasResult.TablaBuscarRow.filter((zna) => { 
             let str = zna.DESCRIPCION.split(' ').join('-');
             return (str.toLowerCase() === query_val.toLowerCase())
           });
-          obj.unshift({ID:"0", DESCRIPCION: "Todas las Zonas"});
+          obj.UsRecuperaTablaBuscarZonasActivasResult.TablaBuscarRow.unshift({ID:"0", DESCRIPCION: "Todas las Zonas"});
           let aux_id = '0';
           if (selected.length > 0) { aux_id = selected[0].ID; paths.shift();}
           
-          this.setState({zonas_activas: obj, zna_id: aux_id});
+          this.setState({zonas_activas: obj.UsRecuperaTablaBuscarZonasActivasResult.TablaBuscarRow, zna_id: aux_id});
           
           let parametros = {OrdenarPor: 'DESCRIPCION', mensaje: ''};
           let  ejemplo = {ID_CDD: this.state.ciudad.ID};
           FacadeClient.RunService(FacadeClient.Services.UsRecuperaTablaBuscarCodigos_comercio, parametros, ejemplo, undefined, (obj) => {
             if (paths.length > 0) { query_val = unescape(paths[0]).split('-').join(' ');}
-            let selected = obj.filter((cga) => {
+            let selected = obj.UsRecuperaTablaBuscarCodigos_comercioResult.TablaBuscarRow.filter((cga) => {
               let str = cga.DESCRIPCION;
               if (str.substr(0,3) === ' - ') {
                 str = str.substr(3, str.length);
@@ -214,16 +229,18 @@ class App extends React.Component {
               return (str.toLowerCase() === query_val.toLowerCase())
             });
             
-            obj.unshift({ID:"0", DESCRIPCION: "Todas las Categorías"});
+            obj.UsRecuperaTablaBuscarCodigos_comercioResult.TablaBuscarRow.unshift({ID:"0", DESCRIPCION: "Todas las Categorías"});
             let aux_id = '0';
             if (selected.length > 0) { aux_id = selected[0].ID; paths.shift();}
-            this.setState({codigos_comercio: obj, cga_id: aux_id});
+            this.setState({codigos_comercio: obj.UsRecuperaTablaBuscarCodigos_comercioResult.TablaBuscarRow, cga_id: aux_id});
             
             let aux_text = '';
             if (paths.length > 0 ){ aux_text = paths.join(' ');}
             aux_text = aux_text.split('-').join(' ');
 
-            this.setState({codigos_comercio: obj, cga_id: aux_id, txt_busqueda: aux_text,  lockScreen: "unlockScreen", redirect: false, txt_error: ''});  
+            this.setState({codigos_comercio: obj.UsRecuperaTablaBuscarCodigos_comercioResult.TablaBuscarRow, 
+                           cga_id: aux_id, txt_busqueda: aux_text,  lockScreen: "unlockScreen", redirect: false, txt_error: ''});
+            this.loadSearch(0);
           }, (errMsg) => { // error al recuperar las zonas activas
             this.setState({lockScreen: "unlockScreen", redirect: true, txt_error: errMsg});
           });
@@ -243,14 +260,48 @@ class App extends React.Component {
     });
   }
 
-  onSearchClick = () => {
-    this.setState({path: this.linkBuilder()})
+  componentWillUnmount() {
+    clearInterval(this.intervalId);
   }
 
-  onEnterPress = () => {
-    let aux = this.linkBuilder();
-    this.setState({path: aux});
+  timer() {
+    this.counter++;
+    if (this.counter === 0) {
+      this.loadSearch(0);
+    }
   }
+ 
+  loadSearch = (gr = null) => {
+    if (gr !== null) this.grupo = gr;
+    this.gr_aux =  this.grupo + 1;
+    let parametros = {ruta: this.state.path, cantidad: 0, mensaje: '', OrdenarPor: '', GruposDe: this.gr_tam.toString(), Grupo: this.gr_aux.toString()};
+    FacadeClient.RunService(FacadeClient.Services.UsBuscaComercios, parametros, null, undefined, (obj) => {
+      if (this.gr_aux === 1) {
+        this.setState({comercios: obj})
+      } else {
+        let aux_obj = this.state.comercios;
+        let aux_mat = aux_obj.UsBuscaComerciosResult.Comercio.concat(obj.UsBuscaComerciosResult.Comercio);
+        aux_obj.UsBuscaComerciosResult.Comercio = aux_mat;
+        this.setState({comercios: aux_obj})
+      }
+      this.grupo = this.gr_aux;      
+    },(errMsg) => {
+      console.log("Error al recuperar comercios " + errMsg)
+    })
+  }
+
+  onSearchClick = () => {
+    this.counter = -1;
+  }
+
+  handleScroll = (e) => {
+    let element = e.target
+    if (element.scrollHeight - element.scrollTop - element.clientHeight <= this.render_offset) {
+      if (this.gr_aux === this.grupo) {
+        this.loadSearch();
+      }
+    }
+  };
 }
 
 export default App;

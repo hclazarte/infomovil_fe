@@ -19,7 +19,7 @@ body
 	height: 100%;
 }
 
-.main 
+.main
 {
 	height: 100%;
   display: flex;
@@ -121,6 +121,24 @@ body
 	opacity: 1;
 }
 
+.svgClear-hidden
+{
+  position: fixed;
+	top: 16px;
+	right: 64px;
+	fill: transparent;
+	cursor: text;
+}
+
+.svgClear
+{
+  position: fixed;
+	top: 16px;
+	right: 64px;
+	fill:black;
+	cursor: pointer;
+}
+
 /* Asycronios Wait */
 .unlockScreen
 {
@@ -132,7 +150,7 @@ body
 	height: 100%;
 	z-index: 20;
 	background: rgba(64, 64, 64, 0.3);
-}	
+}
 
 .lockScreen
 {
@@ -168,7 +186,7 @@ body
 	z-index: 10;
 	background-color: #fbfbfb;
 	background: rgba(64, 64, 64, 0.3);
-}	
+}
 
 .tb
 {
@@ -195,7 +213,7 @@ body
 }
 
 .hamMenu
-{ 
+{
 	position: relative;
 	float:left;
 	background-color: #457aD3;
