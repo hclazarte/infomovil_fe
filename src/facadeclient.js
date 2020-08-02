@@ -1,7 +1,8 @@
 export var FacadeClient = {
 
   // baseUrl: "http://infomovil.shop/fachada/servicios.asmx",
-  baseUrl: "http://192.168.1.205/Fachada/Servicios.asmx",
+  // baseUrl: "http://192.168.1.205/Fachada/Servicios.asmx",
+  baseUrl: "/fachada/servicios.asmx",
   xmlns: "http://infomovil.com.bo/",
   Services: {
     UsRecuperaCiudad: {name:'UsRecuperaCiudad', array_types:['Ciudade']},

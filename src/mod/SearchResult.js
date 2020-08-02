@@ -27,7 +27,8 @@ class SearchResult  extends React.Component {
                   <div className="resultListBox">
                     <div className="empresa">{item.EMPRESA}</div>
                     {item.SERVICIOS}<br/>
-                    {item.TELEFONO1}{item.TELEFONO2}{item.TELEFONO3}
+                    {item.CALLE_NUMERO}  {item.ZONA}<br/>
+                    {item.TELEFONO1}  {item.TELEFONO2}  {item.TELEFONO3}
                   </div>
                 </li>)}
             </ol>

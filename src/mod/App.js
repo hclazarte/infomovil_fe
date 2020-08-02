@@ -274,20 +274,23 @@ class App extends React.Component {
   loadSearch = (gr = null) => {
     if (gr !== null) this.grupo = gr;
     this.gr_aux =  this.grupo + 1;
-    let parametros = {ruta: this.state.path, cantidad: 0, mensaje: '', OrdenarPor: '', GruposDe: this.gr_tam.toString(), Grupo: this.gr_aux.toString()};
-    FacadeClient.RunService(FacadeClient.Services.UsBuscaComercios, parametros, null, undefined, (obj) => {
-      if (this.gr_aux === 1) {
-        this.setState({comercios: obj})
-      } else {
-        let aux_obj = this.state.comercios;
-        let aux_mat = aux_obj.UsBuscaComerciosResult.Comercio.concat(obj.UsBuscaComerciosResult.Comercio);
-        aux_obj.UsBuscaComerciosResult.Comercio = aux_mat;
-        this.setState({comercios: aux_obj})
-      }
-      this.grupo = this.gr_aux;      
-    },(errMsg) => {
-      console.log("Error al recuperar comercios " + errMsg)
-    })
+
+    if (this.state.comercios === undefined || this.gr_aux <= Math.ceil(this.state.comercios.cantidad/this.gr_tam)) {
+      let parametros = {ruta: this.state.path, cantidad: 0, mensaje: '', OrdenarPor: '', GruposDe: this.gr_tam.toString(), Grupo: this.gr_aux.toString()};
+      FacadeClient.RunService(FacadeClient.Services.UsBuscaComercios, parametros, null, undefined, (obj) => {
+        if (this.gr_aux === 1) {
+          this.setState({comercios: obj})
+        } else {
+          let aux_obj = this.state.comercios;
+          let aux_mat = aux_obj.UsBuscaComerciosResult.Comercio.concat(obj.UsBuscaComerciosResult.Comercio);
+          aux_obj.UsBuscaComerciosResult.Comercio = aux_mat;
+          this.setState({comercios: aux_obj})
+        }
+        this.grupo = this.gr_aux;
+      },(errMsg) => {
+        console.log("Error al recuperar comercios " + errMsg)
+      })  
+    }
   }
 
   onSearchClick = () => {
