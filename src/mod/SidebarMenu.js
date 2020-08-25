@@ -4,6 +4,9 @@ import {
 } from "react-router-dom";
 
 class SidebarMenu extends React.Component {
+
+  derivedStateChanged = false;
+
   constructor(props){
     super(props);
     this.state = {style: "hamMenuCanvasHide", ciudad:[], ciudades:[], codigos_comercio:[], zonas_activas:[], zna_id:'0', cga_id: '0'};
@@ -186,9 +189,13 @@ class SidebarMenu extends React.Component {
   }
   onMenuClick() {
     this.setState({style: "hamMenuCanvasShow"});
+    this.derivedStateChanged = false;
   }
   onPanellClick() {
     this.setState({style: "hamMenuCanvasHide"});
+    if (this.derivedStateChanged) {
+      this.props.onPanelDismiss();
+    }
   }
   onMenuOptClick() {
     this.setState({style: "hamMenuCanvasHide"});
@@ -207,14 +214,24 @@ class SidebarMenu extends React.Component {
     this.setState({cga_id: event.target.value});
     this.props.onCategoriaChanged(event.target.value);
   }
-  static getDerivedStateFromProps(props, state) {    
+  shouldComponentUpdate(nextProps, nextState) {
+
+    if (this.state.style === "hamMenuCanvasShow" && 
+        (nextProps.ciudad !==this.props.ciudad || 
+          nextProps.cga_id !== this.props.cga_id || 
+          nextProps.zna_id !== this.props.zna_id)) {
+            this.derivedStateChanged = true
+          }
+    return true;
+  }
+  static getDerivedStateFromProps(props, state) {
     if (props.ciudad !== state.ciudad ||
         props.ciudades !== state.ciudades ||
         props.codigos_comercio !== state.codigos_comercio ||
         props.cga_id !== state.cga_id ||
         props.zonas_activas !== state.zonas_activas ||
         props.zna_id !== state.zna_id) {
-          
+
       return {ciudad: props.ciudad, ciudades: props.ciudades, 
               codigos_comercio: props.codigos_comercio, cga_id: props.cga_id,
               zonas_activas: props.zonas_activas, zna_id: props.zna_id}; 

@@ -4,7 +4,14 @@ class SearchBox extends React.Component{
   constructor(props){
     super(props);
 
-    this.state = {ciudad: {}, txt_busqueda: '', msg: 'Busca en...', clearClass: "svgClear-hidden"};
+    this.state = {ciudad: {}, 
+                  txt_busqueda: '', 
+                  codigos_comercio: [], 
+                  cga_id: '0', 
+                  zonas_activas: [], 
+                  zna_id:'0',
+                  msg: 'Busca en...', 
+                  clearClass: "svgClear-hidden"};
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
@@ -42,15 +49,37 @@ class SearchBox extends React.Component{
     );
   }
   static getDerivedStateFromProps(props, state) {    
+    let msg = ''
+    if (props.cga_id !== undefined  && props.cga_id !== '' && props.cga_id !== '0') {
+      let categoria = props.codigos_comercio.filter((categoria) => {return categoria.ID === props.cga_id})[0].DESCRIPCION
+      msg += categoria.split('-').join(' ').trim() + ', '
+    }
+    if (props.zna_id !== undefined && props.zna_id !== '' && props.zna_id !== '0') {
+      let zona = props.zonas_activas.filter((zona) => {return zona.ID === props.zna_id})[0].DESCRIPCION
+      msg += zona.split('-').join(' ').trim() + ', '
+    }
+    if (props.ciudad.PAIS !== undefined) {
+      msg += props.ciudad.CIUDAD + ', ' + props.ciudad.PAIS
+    }
+
     if (props.ciudad !== state.ciudad || 
-        props.txt_busqueda !== state.txt_busqueda) {
-      let msg = '';
-      if (props.ciudad.length===0){
+        props.txt_busqueda !== state.txt_busqueda ||
+        props.codigos_comercio !== state.codigos_comercio ||
+        props.cga_id !== state.cga_id || 
+        props.zonas_activas !== state.zonas_activas ||
+        props.zna_id !== state.zna_id ) {
+      
+        if (msg.length===0){
         msg = 'Busca en...';
-      } else {
-        msg = 'Busca en ' + props.ciudad.CIUDAD + ', ' + props.ciudad.PAIS;
-      }
-      return {ciudad: props.ciudad, txt_busqueda: props.txt_busqueda, msg: msg}; 
+      } 
+
+      return {ciudad: props.ciudad, 
+              txt_busqueda: props.txt_busqueda, 
+              codigos_comercio: props.codigos_comercio, 
+              cga_id: props.cga_id, 
+              zonas_activas: props.zonas_activas, 
+              zna_id: props.zna_id,
+              msg: msg }
     }
     return null;
   }

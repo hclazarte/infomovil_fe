@@ -1,5 +1,6 @@
 import React from "react";
 import '../css/SearchResult.css';
+import wait_img from '../img/waiting3.gif'
 
 class SearchResult  extends React.Component {
   constructor(props){
@@ -8,12 +9,15 @@ class SearchResult  extends React.Component {
     this.state = {comercios: undefined};
 
     this.renderResultado = () => {
-      var coincidencias = 0;
-      
-      if (this.state.comercios !== undefined) coincidencias = parseInt(this.state.comercios.cantidad, 10);
-      if (coincidencias === 0 ) {
+      if (this.state.comercios === undefined) {
         return (
-          <p className="Resultado">No se encontraron coincidencias para su búsqueda</p>
+          <div className="waitingDivCom">
+            <img className="waitingCom" src={wait_img} width="10px" alt="Cargando..."></img>
+          </div>
+        )
+      } else if (this.state.comercios.UsBuscaComerciosResult.Comercio.length === 0 ) {
+        return (
+          <p>No existen coincidencias para su búsqueda</p>
         )
       }
     }
