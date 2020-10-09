@@ -1,5 +1,5 @@
 import React from 'react'
-import error_img from '../img/Error.png'
+import errorImg from '../img/Error.png'
 
 class Error extends React.Component {
   constructor(props) {
@@ -13,7 +13,7 @@ class Error extends React.Component {
       <div id='Error'>
         <img
           className='imgError'
-          src={error_img}
+          src={errorImg}
           width='100px'
           height='100px'
           alt='Error'

@@ -1,7 +1,7 @@
 export var FacadeClient = {
-  // baseUrl: "https://infomovil.shop/fachada/servicios.asmx",
-  // baseUrl: "http://192.168.1.205/Fachada/Servicios.asmx",
-  baseUrl: '/fachada/servicios.asmx',
+  baseUrl: 'https://infomovil.shop/fachada/servicios.asmx',
+  // baseUrl: 'http://192.168.1.205/Fachada/Servicios.asmx',
+  // baseUrl: '/fachada/servicios.asmx',
   xmlns: 'http://infomovil.com.bo/',
   Services: {
     UsRecuperaCiudad: { name: 'UsRecuperaCiudad', array_types: ['Ciudade'] },
@@ -27,8 +27,8 @@ FacadeClient.RunService = (
   parameters,
   ejemplo,
   xmlns_ = FacadeClient.xmlns,
-  when_fetched,
-  when_err
+  whenFetched,
+  whenErr
 ) => {
   const soapMessage = FacadeClient.SoapWrap(
     service.name,
@@ -37,10 +37,10 @@ FacadeClient.RunService = (
     xmlns_
   )
 
-  const hd = new Headers()
+  const hd = new window.Headers()
   hd.append('Content-Type', 'text/xml; charset=utf-8')
 
-  fetch(FacadeClient.baseUrl + '?op=' + service.name, {
+  window.fetch(FacadeClient.baseUrl + '?op=' + service.name, {
     method: 'POST',
     body: soapMessage,
     headers: hd
@@ -52,14 +52,14 @@ FacadeClient.RunService = (
         return 'Error: no se encuentra el servidor, por favor reintente'
       }
     })
-    .then((xml_text) => {
+    .then((xmlText) => {
       if (
-        xml_text === 'Error: no se encuentra el servidor, por favor reintente'
+        xmlText === 'Error: no se encuentra el servidor, por favor reintente'
       ) {
-        when_err(xml_text)
+        whenErr(xmlText)
       } else {
-        const parser = new DOMParser()
-        const xmlDoc = parser.parseFromString(xml_text, 'text/xml')
+        const parser = new window.DOMParser()
+        const xmlDoc = parser.parseFromString(xmlText, 'text/xml')
         const response = xmlDoc.getElementsByTagName(
           service.name + 'Response'
         )[0]
@@ -67,7 +67,7 @@ FacadeClient.RunService = (
         const objsRes = FacadeClient.Deserialize({}, response, service)
 
         if (objsRes.mensaje === undefined) {
-          when_err('Error: no se reconoce la respuesta del servidor')
+          whenErr('Error: no se reconoce la respuesta del servidor')
         } else {
           if (objsRes.mensaje !== '') {
             if (
@@ -85,18 +85,18 @@ FacadeClient.RunService = (
                   writable: true
                 })
                 Reflect.set(objsRes, service.name + 'Result', { value: {} })
-                const aux_obj = Reflect.get(objsRes, service.name + 'Result')
-                Reflect.defineProperty(aux_obj, service.array_types[0], {
+                const auxObj = Reflect.get(objsRes, service.name + 'Result')
+                Reflect.defineProperty(auxObj, service.array_types[0], {
                   value: [],
                   writable: true
                 })
               }
-              when_fetched(objsRes)
+              whenFetched(objsRes)
             } else {
-              when_err(objsRes.mensaje)
+              whenErr(objsRes.mensaje)
             }
           } else {
-            when_fetched(objsRes)
+            whenFetched(objsRes)
           }
         }
       }
@@ -207,13 +207,13 @@ FacadeClient.hasChildren = (node) => {
 }
 
 FacadeClient.isArrayTag = (service, value) => {
-  let ret_val = false
+  let retVal = false
   if (service.array_types !== undefined) {
     service.array_types.forEach((element) => {
-      if (element === value) ret_val = true
+      if (element === value) retVal = true
     })
   }
-  return ret_val
+  return retVal
 }
 
 FacadeClient.isEmptyTag = (node) => {

@@ -1,6 +1,6 @@
 import React from 'react'
 import '../css/SearchResult.css'
-import wait_img from '../img/waiting3.gif'
+import waitImg from '../img/waiting3.gif'
 
 class SearchResult extends React.Component {
   constructor(props) {
@@ -14,7 +14,7 @@ class SearchResult extends React.Component {
           <div className='waitingDivCom'>
             <img
               className='waitingCom'
-              src={wait_img}
+              src={waitImg}
               width='10px'
               alt='Cargando...'
             />

@@ -15,7 +15,7 @@ import {
   Redirect
 } from 'react-router-dom'
 import { FacadeClient } from '../facadeclient'
-import wait_img from '../img/waiting2.gif'
+import waitImg from '../img/waiting2.gif'
 
 class App extends React.Component {
   counter = 0
@@ -237,7 +237,7 @@ class App extends React.Component {
           <div className={this.state.lockScreen}>
             <img
               className='waitingImg'
-              src={wait_img}
+              src={waitImg}
               width='100px'
               height='100px'
               alt='Cargando...'

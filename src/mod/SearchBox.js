@@ -14,10 +14,10 @@ class SearchBox extends React.Component {
       msg: 'Busca en...',
       clearClass: 'svgClear-hidden'
     }
-    this.onSearchChange = this.onSearchChange.bind(this)
-    this.onInputFocus = this.onInputFocus.bind(this)
-    this.onInputBlur = this.onInputBlur.bind(this)
-    this.onClearClick = this.onClearClick.bind(this)
+    this.handleOnSearchChange = this.handleOnSearchChange.bind(this)
+    this.handleOnInputFocus = this.handleOnInputFocus.bind(this)
+    this.handleOnInputBlur = this.handleOnInputBlur.bind(this)
+    this.handleOnClearClick = this.handleOnClearClick.bind(this)
   }
 
   render() {
@@ -27,15 +27,15 @@ class SearchBox extends React.Component {
           className='searchInput'
           autoFocus
           value={this.state.txt_busqueda}
-          onChange={this.onSearchChange}
-          onFocus={this.onInputFocus}
-          onBlur={this.onInputBlur}
+          onChange={this.handleOnSearchChange}
+          onFocus={this.handleOnInputFocus}
+          onBlur={this.handleOnInputBlur}
           ref={(input) => {
             this.searchInput = input
           }}
           placeholder={this.state.msg}
         />
-        <div onClick={this.onClearClick} className={this.state.clearClass}>
+        <div onClick={this.handleOnClearClick} className={this.state.clearClass}>
           <svg
             x='0px'
             y='0px'
@@ -121,19 +121,19 @@ class SearchBox extends React.Component {
     this.searchInput.focus()
   }
 
-  onSearchChange(event) {
+  handleOnSearchChange(event) {
     this.props.onSearchTextChanged(event.target.value)
   }
 
-  onInputFocus() {
+  handleOnInputFocus() {
     this.setState({ clearClass: 'svgClear' })
   }
 
-  onInputBlur() {
+  handleOnInputBlur() {
     this.setState({ clearClass: 'svgClear-hidden' })
   }
 
-  onClearClick() {
+  handleOnClearClick() {
     this.props.onSearchTextChanged('')
     this.searchInput.focus()
   }
