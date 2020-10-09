@@ -3,9 +3,9 @@ import React from 'react'
 class Ayuda extends React.Component {
   render() {
     return (
-      <div id="inicio">
-        <p className="inicio_titulo">Ayuda Infomóvil</p>
-        <p className="inicio_contenido">
+      <div id='inicio'>
+        <p className='inicio_titulo'>Ayuda Infomóvil</p>
+        <p className='inicio_contenido'>
           Infomóvil es un buscador que brinda datos al estilo de las guías de
           páginas amarillas, te brinda un método facil de encontrar los bienes o
           servicios que buscas mostrandote un mapa iterativo de la ciudad ligado

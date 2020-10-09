@@ -12,7 +12,7 @@ import {
   Switch,
   Route,
   Link,
-  Redirect,
+  Redirect
 } from 'react-router-dom'
 import { FacadeClient } from '../facadeclient'
 import wait_img from '../img/waiting2.gif'
@@ -38,19 +38,19 @@ class App extends React.Component {
       if (!this.state.redirect) {
         return (
           <Switch>
-            <Route exact path="/">
+            <Route exact path='/'>
               <Inicio />
             </Route>
-            <Route path="/ayuda">
+            <Route path='/ayuda'>
               <Ayuda />
             </Route>
-            <Route path="/servicios">
+            <Route path='/servicios'>
               <Servicios />
             </Route>
-            <Route path="/error">
+            <Route path='/error'>
               <Error />
             </Route>
-            <Route path="/*">
+            <Route path='/*'>
               <SearchResult comercios={this.state.comercios}></SearchResult>
             </Route>
           </Switch>
@@ -81,7 +81,7 @@ class App extends React.Component {
           this.setState({
             codigos_comercio:
               obj.UsRecuperaTablaBuscarCodigos_comercioResult.TablaBuscarRow,
-            cga_id: '0',
+            cga_id: '0'
           })
 
           let parametros = { mensaje: '' }
@@ -101,7 +101,7 @@ class App extends React.Component {
                 lockScreen: 'unlockScreen',
                 redirect: false,
                 txt_error: '',
-                zna_id: '0',
+                zna_id: '0'
               })
             },
             (errMsg) => {
@@ -111,13 +111,13 @@ class App extends React.Component {
                   zonas_activas: [],
                   lockScreen: 'unlockScreen',
                   redirect: false,
-                  txt_error: '',
+                  txt_error: ''
                 })
               } else {
                 this.setState({
                   lockScreen: 'unlockScreen',
                   redirect: true,
-                  txt_error: errMsg,
+                  txt_error: errMsg
                 })
               }
             }
@@ -130,19 +130,19 @@ class App extends React.Component {
               codigos_comercio: [],
               lockScreen: 'unlockScreen',
               redirect: false,
-              txt_error: '',
+              txt_error: ''
             })
           } else {
             this.setState({
               lockScreen: 'unlockScreen',
               redirect: true,
-              txt_error: errMsg,
+              txt_error: errMsg
             })
           }
           this.setState({
             lockScreen: 'unlockScreen',
             redirect: true,
-            txt_error: errMsg,
+            txt_error: errMsg
           })
         }
       )
@@ -226,28 +226,28 @@ class App extends React.Component {
       zna_id: '0',
       txt_busqueda: '',
       path: decodeURI(window.location.pathname),
-      comercios: undefined,
+      comercios: undefined
     }
   }
   render() {
     return (
       <Router>
         {this.renderRedirect()}
-        <div className="main" onScroll={this.handleScroll}>
+        <div className='main' onScroll={this.handleScroll}>
           <div className={this.state.lockScreen}>
             <img
-              className="waitingImg"
+              className='waitingImg'
               src={wait_img}
-              width="100px"
-              height="100px"
-              alt="Cargando..."
+              width='100px'
+              height='100px'
+              alt='Cargando...'
             ></img>
           </div>
-          <div className="topBarDiv">
-            <table className="topBar">
+          <div className='topBarDiv'>
+            <table className='topBar'>
               <tbody>
                 <tr>
-                  <td className="iconCell">
+                  <td className='iconCell'>
                     <SidebarMenu
                       onCiudadChanged={this.onCiudadChanged}
                       onZonaChanged={this.onZonaChanged}
@@ -272,7 +272,7 @@ class App extends React.Component {
                       zna_id={this.state.zna_id}
                     />
                   </td>
-                  <td className="iconCell">
+                  <td className='iconCell'>
                     <Link to={this.linkBuilder()}>
                       <SearchIcon onSearchClick={this.onSearchClick} />
                     </Link>
@@ -281,7 +281,7 @@ class App extends React.Component {
               </tbody>
             </table>
           </div>
-          <div className="contenido">
+          <div className='contenido'>
             {this.renderError()}
             {this.renderRoute()}
           </div>
@@ -324,7 +324,7 @@ class App extends React.Component {
           undefined,
           (obj) => {
             this.setState({
-              ciudades: obj.UsRecuperaTodosCiudadesResult.Ciudade,
+              ciudades: obj.UsRecuperaTodosCiudadesResult.Ciudade
             })
 
             let parametros = { OrdenarPor: 'DESCRIPCION', mensaje: '' }
@@ -356,7 +356,7 @@ class App extends React.Component {
                 this.setState({
                   zonas_activas:
                     obj.UsRecuperaTablaBuscarZonasActivasResult.TablaBuscarRow,
-                  zna_id: aux_id,
+                  zna_id: aux_id
                 })
 
                 let parametros = { mensaje: '' }
@@ -392,7 +392,7 @@ class App extends React.Component {
                       codigos_comercio:
                         obj.UsRecuperaTablaBuscarCodigos_comercioResult
                           .TablaBuscarRow,
-                      cga_id: aux_id,
+                      cga_id: aux_id
                     })
 
                     let aux_text = ''
@@ -409,7 +409,7 @@ class App extends React.Component {
                       txt_busqueda: aux_text,
                       lockScreen: 'unlockScreen',
                       redirect: false,
-                      txt_error: '',
+                      txt_error: ''
                     })
                     this.loadSearch(0)
                   },
@@ -418,7 +418,7 @@ class App extends React.Component {
                     this.setState({
                       lockScreen: 'unlockScreen',
                       redirect: true,
-                      txt_error: errMsg,
+                      txt_error: errMsg
                     })
                   }
                 )
@@ -430,19 +430,19 @@ class App extends React.Component {
                     codigos_comercio: [],
                     lockScreen: 'unlockScreen',
                     redirect: false,
-                    txt_error: '',
+                    txt_error: ''
                   })
                 } else {
                   this.setState({
                     lockScreen: 'unlockScreen',
                     redirect: true,
-                    txt_error: errMsg,
+                    txt_error: errMsg
                   })
                 }
                 this.setState({
                   lockScreen: 'unlockScreen',
                   redirect: true,
-                  txt_error: errMsg,
+                  txt_error: errMsg
                 })
               }
             )
@@ -452,7 +452,7 @@ class App extends React.Component {
             this.setState({
               lockScreen: 'unlockScreen',
               redirect: true,
-              txt_error: errMsg,
+              txt_error: errMsg
             })
           }
         )
@@ -462,7 +462,7 @@ class App extends React.Component {
         this.setState({
           lockScreen: 'unlockScreen',
           redirect: true,
-          txt_error: errMsg,
+          txt_error: errMsg
         })
       }
     )
@@ -496,7 +496,7 @@ class App extends React.Component {
         mensaje: '',
         OrdenarPor: '',
         GruposDe: this.gr_tam.toString(),
-        Grupo: this.gr_aux.toString(),
+        Grupo: this.gr_aux.toString()
       }
       FacadeClient.RunService(
         FacadeClient.Services.UsBuscaComercios,

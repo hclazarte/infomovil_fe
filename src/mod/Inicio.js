@@ -3,9 +3,9 @@ import React from 'react'
 class Inicio extends React.Component {
   render() {
     return (
-      <div id="inicio">
-        <p className="inicio_titulo">Infomóvil</p>
-        <p className="inicio_contenido">
+      <div id='inicio'>
+        <p className='inicio_titulo'>Infomóvil</p>
+        <p className='inicio_contenido'>
           Infomóvil es una guía de comercios ligada a un mapa que nos ayuda a
           localizar los bienes o servicios que demandamos en la ciudad. En su
           Base de Datos se pueden encontrar los comercios organizados por zonas

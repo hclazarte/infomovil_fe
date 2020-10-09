@@ -7,19 +7,19 @@ export var FacadeClient = {
     UsRecuperaCiudad: { name: 'UsRecuperaCiudad', array_types: ['Ciudade'] },
     UsRecuperaTodosCiudades: {
       name: 'UsRecuperaTodosCiudades',
-      array_types: ['Ciudade'],
+      array_types: ['Ciudade']
     },
     UsRecuperaTablaBuscarCodigos_comercio: {
       name: 'UsRecuperaTablaBuscarCodigos_comercio',
-      array_types: ['TablaBuscarRow'],
+      array_types: ['TablaBuscarRow']
     },
     UsRecuperaTablaBuscarZonasActivas: {
       name: 'UsRecuperaTablaBuscarZonasActivas',
-      array_types: ['TablaBuscarRow'],
+      array_types: ['TablaBuscarRow']
     },
     UsCuentaBusqueda: { name: 'UsCuentaBusqueda' },
-    UsBuscaComercios: { name: 'UsBuscaComercios', array_types: ['Comercio'] },
-  },
+    UsBuscaComercios: { name: 'UsBuscaComercios', array_types: ['Comercio'] }
+  }
 }
 
 FacadeClient.RunService = (
@@ -43,7 +43,7 @@ FacadeClient.RunService = (
   fetch(FacadeClient.baseUrl + '?op=' + service.name, {
     method: 'POST',
     body: soapMessage,
-    headers: hd,
+    headers: hd
   })
     .then((res) => {
       if (res.ok) {
@@ -82,13 +82,13 @@ FacadeClient.RunService = (
                 }
                 Reflect.defineProperty(objsRes, service.name + 'Result', {
                   value: {},
-                  writable: true,
+                  writable: true
                 })
                 Reflect.set(objsRes, service.name + 'Result', { value: {} })
                 const aux_obj = Reflect.get(objsRes, service.name + 'Result')
                 Reflect.defineProperty(aux_obj, service.array_types[0], {
                   value: [],
-                  writable: true,
+                  writable: true
                 })
               }
               when_fetched(objsRes)
@@ -177,7 +177,7 @@ FacadeClient.Deserialize = (obj, xmlDoc, service) => {
       if (FacadeClient.hasChildren(node)) {
         Reflect.defineProperty(obj, node.tagName, {
           value: FacadeClient.Deserialize({}, node, service),
-          writable: true,
+          writable: true
         })
       } else {
         if (
@@ -187,7 +187,7 @@ FacadeClient.Deserialize = (obj, xmlDoc, service) => {
           // Para evitar que se cree string vacio cuando no hay respuesta
           Reflect.defineProperty(obj, node.tagName, {
             value: node.innerHTML,
-            writable: true,
+            writable: true
           })
         }
       }
@@ -196,7 +196,7 @@ FacadeClient.Deserialize = (obj, xmlDoc, service) => {
   if (currentArrayTag !== '') {
     Reflect.defineProperty(obj, currentArrayTag, {
       value: ObjArray,
-      writable: true,
+      writable: true
     })
   }
   return obj

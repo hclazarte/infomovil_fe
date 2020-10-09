@@ -10,21 +10,21 @@ class Error extends React.Component {
 
   render() {
     return (
-      <div id="Error">
+      <div id='Error'>
         <img
-          className="imgError"
+          className='imgError'
           src={error_img}
-          width="100px"
-          height="100px"
-          alt="Error"
+          width='100px'
+          height='100px'
+          alt='Error'
         />
-        <p className="txtError">
+        <p className='txtError'>
           Algo anormal a ocurrido. Perdone las molestias
         </p>
         <br />
-        <p className="txtError">el último mensaje que recibimos dice:</p>
+        <p className='txtError'>el último mensaje que recibimos dice:</p>
         <br />
-        <p className="txtError">{this.state.txt_error}</p>
+        <p className='txtError'>{this.state.txt_error}</p>
       </div>
     )
   }

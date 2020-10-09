@@ -11,12 +11,12 @@ class SearchResult extends React.Component {
     this.renderResultado = () => {
       if (this.state.comercios === undefined) {
         return (
-          <div className="waitingDivCom">
+          <div className='waitingDivCom'>
             <img
-              className="waitingCom"
+              className='waitingCom'
               src={wait_img}
-              width="10px"
-              alt="Cargando..."
+              width='10px'
+              alt='Cargando...'
             />
           </div>
         )
@@ -35,9 +35,9 @@ class SearchResult extends React.Component {
             <ol>
               {this.state.comercios.UsBuscaComerciosResult.Comercio.map(
                 (item) => (
-                  <li className="resultList" key={item.ID}>
-                    <div className="resultListBox">
-                      <div className="empresa">{item.EMPRESA}</div>
+                  <li className='resultList' key={item.ID}>
+                    <div className='resultListBox'>
+                      <div className='empresa'>{item.EMPRESA}</div>
                       {item.SERVICIOS}
                       <br />
                       {item.CALLE_NUMERO} {item.ZONA}

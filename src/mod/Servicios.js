@@ -3,9 +3,9 @@ import React from 'react'
 class Servicios extends React.Component {
   render() {
     return (
-      <div id="inicio">
-        <p className="inicio_titulo">Servicios Infomóvil</p>
-        <p className="inicio_contenido">
+      <div id='inicio'>
+        <p className='inicio_titulo'>Servicios Infomóvil</p>
+        <p className='inicio_contenido'>
           Para satisfacer a los usuarios nuestra política es el registro de la
           mayor cantidad de comercios, el registro se hace periodicamente
           visitando los comercios a lo largo de toda la ciudad, de esta manera
