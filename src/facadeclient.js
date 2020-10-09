@@ -1,21 +1,41 @@
 export var FacadeClient = {
-
   // baseUrl: "https://infomovil.shop/fachada/servicios.asmx",
   // baseUrl: "http://192.168.1.205/Fachada/Servicios.asmx",
   baseUrl: '/fachada/servicios.asmx',
   xmlns: 'http://infomovil.com.bo/',
   Services: {
     UsRecuperaCiudad: { name: 'UsRecuperaCiudad', array_types: ['Ciudade'] },
-    UsRecuperaTodosCiudades: { name: 'UsRecuperaTodosCiudades', array_types: ['Ciudade'] },
-    UsRecuperaTablaBuscarCodigos_comercio: { name: 'UsRecuperaTablaBuscarCodigos_comercio', array_types: ['TablaBuscarRow'] },
-    UsRecuperaTablaBuscarZonasActivas: { name: 'UsRecuperaTablaBuscarZonasActivas', array_types: ['TablaBuscarRow'] },
+    UsRecuperaTodosCiudades: {
+      name: 'UsRecuperaTodosCiudades',
+      array_types: ['Ciudade'],
+    },
+    UsRecuperaTablaBuscarCodigos_comercio: {
+      name: 'UsRecuperaTablaBuscarCodigos_comercio',
+      array_types: ['TablaBuscarRow'],
+    },
+    UsRecuperaTablaBuscarZonasActivas: {
+      name: 'UsRecuperaTablaBuscarZonasActivas',
+      array_types: ['TablaBuscarRow'],
+    },
     UsCuentaBusqueda: { name: 'UsCuentaBusqueda' },
-    UsBuscaComercios: { name: 'UsBuscaComercios', array_types: ['Comercio'] }
-  }
+    UsBuscaComercios: { name: 'UsBuscaComercios', array_types: ['Comercio'] },
+  },
 }
 
-FacadeClient.RunService = (service, parameters, ejemplo, xmlns_ = FacadeClient.xmlns, when_fetched, when_err) => {
-  const soapMessage = FacadeClient.SoapWrap(service.name, parameters, ejemplo, xmlns_)
+FacadeClient.RunService = (
+  service,
+  parameters,
+  ejemplo,
+  xmlns_ = FacadeClient.xmlns,
+  when_fetched,
+  when_err
+) => {
+  const soapMessage = FacadeClient.SoapWrap(
+    service.name,
+    parameters,
+    ejemplo,
+    xmlns_
+  )
 
   const hd = new Headers()
   hd.append('Content-Type', 'text/xml; charset=utf-8')
@@ -23,53 +43,76 @@ FacadeClient.RunService = (service, parameters, ejemplo, xmlns_ = FacadeClient.x
   fetch(FacadeClient.baseUrl + '?op=' + service.name, {
     method: 'POST',
     body: soapMessage,
-    headers: hd
-  }).then(res => {
-    if (res.ok) {
-      return res.text()
-    } else {
-      return 'Error: no se encuentra el servidor, por favor reintente'
-    }
-  }).then(xml_text => {
-    if (xml_text === 'Error: no se encuentra el servidor, por favor reintente') {
-      when_err(xml_text)
-    } else {
-      const parser = new DOMParser()
-      const xmlDoc = parser.parseFromString(xml_text, 'text/xml')
-      const response = xmlDoc.getElementsByTagName(service.name + 'Response')[0]
-
-      const objsRes = FacadeClient.Deserialize({}, response, service)
-
-      if (objsRes.mensaje === undefined) {
-        when_err('Error: no se reconoce la respuesta del servidor')
+    headers: hd,
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.text()
       } else {
-        if (objsRes.mensaje !== '') {
-          if (objsRes.mensaje === 'Negocio: No existen datos para la consulta') {
-            if (service.array_types !== undefined) { // Agregando objeto vacio con array vacio cuando no hay registros de respuesta
-              if (Reflect.get(objsRes, service.name + 'Result') !== undefined) {
-                Reflect.deleteProperty(objsRes, service.name + 'Result')
-              }
-              Reflect.defineProperty(objsRes, service.name + 'Result', { value: {}, writable: true })
-              Reflect.set(objsRes, service.name + 'Result', { value: {} })
-              const aux_obj = Reflect.get(objsRes, service.name + 'Result')
-              Reflect.defineProperty(aux_obj, service.array_types[0], { value: [], writable: true })
-            }
-            when_fetched(objsRes)
-          } else {
-            when_err(objsRes.mensaje)
-          }
+        return 'Error: no se encuentra el servidor, por favor reintente'
+      }
+    })
+    .then((xml_text) => {
+      if (
+        xml_text === 'Error: no se encuentra el servidor, por favor reintente'
+      ) {
+        when_err(xml_text)
+      } else {
+        const parser = new DOMParser()
+        const xmlDoc = parser.parseFromString(xml_text, 'text/xml')
+        const response = xmlDoc.getElementsByTagName(
+          service.name + 'Response'
+        )[0]
+
+        const objsRes = FacadeClient.Deserialize({}, response, service)
+
+        if (objsRes.mensaje === undefined) {
+          when_err('Error: no se reconoce la respuesta del servidor')
         } else {
-          when_fetched(objsRes)
+          if (objsRes.mensaje !== '') {
+            if (
+              objsRes.mensaje === 'Negocio: No existen datos para la consulta'
+            ) {
+              if (service.array_types !== undefined) {
+                // Agregando objeto vacio con array vacio cuando no hay registros de respuesta
+                if (
+                  Reflect.get(objsRes, service.name + 'Result') !== undefined
+                ) {
+                  Reflect.deleteProperty(objsRes, service.name + 'Result')
+                }
+                Reflect.defineProperty(objsRes, service.name + 'Result', {
+                  value: {},
+                  writable: true,
+                })
+                Reflect.set(objsRes, service.name + 'Result', { value: {} })
+                const aux_obj = Reflect.get(objsRes, service.name + 'Result')
+                Reflect.defineProperty(aux_obj, service.array_types[0], {
+                  value: [],
+                  writable: true,
+                })
+              }
+              when_fetched(objsRes)
+            } else {
+              when_err(objsRes.mensaje)
+            }
+          } else {
+            when_fetched(objsRes)
+          }
         }
       }
-    }
-  })
+    })
 }
 
-FacadeClient.SoapWrap = (webService, parameters, ejemplo, xmlns_ = this.xmlns) => {
+FacadeClient.SoapWrap = (
+  webService,
+  parameters,
+  ejemplo,
+  xmlns_ = this.xmlns
+) => {
   let soapMessage = ''
   soapMessage += '<?xml version="1.0" encoding="utf-8"?>\n'
-  soapMessage += '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">\n'
+  soapMessage +=
+    '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">\n'
   soapMessage += '<soap:Body>\n'
   soapMessage += '<' + webService + ' xmlns="' + xmlns_ + '">\n'
   if (parameters !== null) {
@@ -101,7 +144,16 @@ FacadeClient.Serialize = (businessObj) => {
       if (_xmlns_ === '') {
         serie += '<' + entry[0] + '>' + entry[1] + '</' + entry[0] + '>\n'
       } else {
-        serie += '<' + entry[0] + ' xmlns="' + _xmlns_ + '">' + entry[1] + '</' + entry[0] + '>\n'
+        serie +=
+          '<' +
+          entry[0] +
+          ' xmlns="' +
+          _xmlns_ +
+          '">' +
+          entry[1] +
+          '</' +
+          entry[0] +
+          '>\n'
       }
     }
   })
@@ -123,29 +175,41 @@ FacadeClient.Deserialize = (obj, xmlDoc, service) => {
         ObjArray = []
       }
       if (FacadeClient.hasChildren(node)) {
-        Reflect.defineProperty(obj, node.tagName, { value: FacadeClient.Deserialize({}, node, service), writable: true })
+        Reflect.defineProperty(obj, node.tagName, {
+          value: FacadeClient.Deserialize({}, node, service),
+          writable: true,
+        })
       } else {
-        if (node.tagName !== service.name + 'Result' || !FacadeClient.isEmptyTag(node)) {
+        if (
+          node.tagName !== service.name + 'Result' ||
+          !FacadeClient.isEmptyTag(node)
+        ) {
           // Para evitar que se cree string vacio cuando no hay respuesta
-          Reflect.defineProperty(obj, node.tagName, { value: node.innerHTML, writable: true })
+          Reflect.defineProperty(obj, node.tagName, {
+            value: node.innerHTML,
+            writable: true,
+          })
         }
       }
     }
   })
   if (currentArrayTag !== '') {
-    Reflect.defineProperty(obj, currentArrayTag, { value: ObjArray, writable: true })
+    Reflect.defineProperty(obj, currentArrayTag, {
+      value: ObjArray,
+      writable: true,
+    })
   }
   return obj
 }
 
 FacadeClient.hasChildren = (node) => {
-  return (node.children.length > 0)
+  return node.children.length > 0
 }
 
 FacadeClient.isArrayTag = (service, value) => {
   let ret_val = false
   if (service.array_types !== undefined) {
-    service.array_types.forEach(element => {
+    service.array_types.forEach((element) => {
       if (element === value) ret_val = true
     })
   }
@@ -153,5 +217,5 @@ FacadeClient.isArrayTag = (service, value) => {
 }
 
 FacadeClient.isEmptyTag = (node) => {
-  return (node.innerHTML === '')
+  return node.innerHTML === ''
 }

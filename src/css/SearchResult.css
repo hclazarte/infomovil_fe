@@ -1,13 +1,13 @@
 .resultList {
   width: 100%-20px;
-  background-color:#c3cce9;
+  background-color: #c3cce9;
   padding-left: 6px;
   padding-right: 6px;
   padding-bottom: 5px;
-  border-bottom:1px solid #b4c9ec;
+  border-bottom: 1px solid #b4c9ec;
   font: 14px Arial, Helvetica, sans-serif;
 }
 .empresa {
   font-weight: bold;
-  color: #527DD6;
+  color: #527dd6;
 }
