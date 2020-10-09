@@ -35,7 +35,10 @@ class SearchBox extends React.Component {
           }}
           placeholder={this.state.msg}
         />
-        <div onClick={this.handleOnClearClick} className={this.state.clearClass}>
+        <div
+          onClick={this.handleOnClearClick}
+          className={this.state.clearClass}
+        >
           <svg
             x='0px'
             y='0px'

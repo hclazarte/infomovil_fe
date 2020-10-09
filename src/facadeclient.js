@@ -40,11 +40,12 @@ FacadeClient.RunService = (
   const hd = new window.Headers()
   hd.append('Content-Type', 'text/xml; charset=utf-8')
 
-  window.fetch(FacadeClient.baseUrl + '?op=' + service.name, {
-    method: 'POST',
-    body: soapMessage,
-    headers: hd
-  })
+  window
+    .fetch(FacadeClient.baseUrl + '?op=' + service.name, {
+      method: 'POST',
+      body: soapMessage,
+      headers: hd
+    })
     .then((res) => {
       if (res.ok) {
         return res.text()
