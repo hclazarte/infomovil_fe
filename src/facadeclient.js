@@ -22,13 +22,11 @@ export var FacadeClient = {
   }
 }
 
-FacadeClient.RunService = (
+FacadeClient.RunServicePromise = (
   service,
   parameters,
   ejemplo,
-  xmlns_ = FacadeClient.xmlns,
-  whenFetched,
-  whenErr
+  xmlns_ = FacadeClient.xmlns
 ) => {
   const soapMessage = FacadeClient.SoapWrap(
     service.name,
@@ -40,68 +38,70 @@ FacadeClient.RunService = (
   const hd = new window.Headers()
   hd.append('Content-Type', 'text/xml; charset=utf-8')
 
-  window
-    .fetch(FacadeClient.baseUrl + '?op=' + service.name, {
-      method: 'POST',
-      body: soapMessage,
-      headers: hd
-    })
-    .then((res) => {
-      if (res.ok) {
-        return res.text()
-      } else {
-        return 'Error: no se encuentra el servidor, por favor reintente'
-      }
-    })
-    .then((xmlText) => {
-      if (
-        xmlText === 'Error: no se encuentra el servidor, por favor reintente'
-      ) {
-        whenErr(xmlText)
-      } else {
-        const parser = new window.DOMParser()
-        const xmlDoc = parser.parseFromString(xmlText, 'text/xml')
-        const response = xmlDoc.getElementsByTagName(
-          service.name + 'Response'
-        )[0]
-
-        const objsRes = FacadeClient.Deserialize({}, response, service)
-
-        if (objsRes.mensaje === undefined) {
-          whenErr('Error: no se reconoce la respuesta del servidor')
+  return new Promise((whenFetched, whenErr) => {
+    window
+      .fetch(FacadeClient.baseUrl + '?op=' + service.name, {
+        method: 'POST',
+        body: soapMessage,
+        headers: hd
+      })
+      .then((res) => {
+        if (res.ok) {
+          return res.text()
         } else {
-          if (objsRes.mensaje !== '') {
-            if (
-              objsRes.mensaje === 'Negocio: No existen datos para la consulta'
-            ) {
-              if (service.array_types !== undefined) {
-                // Agregando objeto vacio con array vacio cuando no hay registros de respuesta
-                if (
-                  Reflect.get(objsRes, service.name + 'Result') !== undefined
-                ) {
-                  Reflect.deleteProperty(objsRes, service.name + 'Result')
-                }
-                Reflect.defineProperty(objsRes, service.name + 'Result', {
-                  value: {},
-                  writable: true
-                })
-                Reflect.set(objsRes, service.name + 'Result', { value: {} })
-                const auxObj = Reflect.get(objsRes, service.name + 'Result')
-                Reflect.defineProperty(auxObj, service.array_types[0], {
-                  value: [],
-                  writable: true
-                })
-              }
-              whenFetched(objsRes)
-            } else {
-              whenErr(objsRes.mensaje)
-            }
+          return 'Error: no se encuentra el servidor, por favor reintente'
+        }
+      })
+      .then((xmlText) => {
+        if (
+          xmlText === 'Error: no se encuentra el servidor, por favor reintente'
+        ) {
+          whenErr(xmlText)
+        } else {
+          const parser = new window.DOMParser()
+          const xmlDoc = parser.parseFromString(xmlText, 'text/xml')
+          const response = xmlDoc.getElementsByTagName(
+            service.name + 'Response'
+          )[0]
+
+          const objsRes = FacadeClient.Deserialize({}, response, service)
+
+          if (objsRes.mensaje === undefined) {
+            whenErr('Error: no se reconoce la respuesta del servidor')
           } else {
-            whenFetched(objsRes)
+            if (objsRes.mensaje !== '') {
+              if (
+                objsRes.mensaje === 'Negocio: No existen datos para la consulta'
+              ) {
+                if (service.array_types !== undefined) {
+                  // Agregando objeto vacio con array vacio cuando no hay registros de respuesta
+                  if (
+                    Reflect.get(objsRes, service.name + 'Result') !== undefined
+                  ) {
+                    Reflect.deleteProperty(objsRes, service.name + 'Result')
+                  }
+                  Reflect.defineProperty(objsRes, service.name + 'Result', {
+                    value: {},
+                    writable: true
+                  })
+                  Reflect.set(objsRes, service.name + 'Result', { value: {} })
+                  const auxObj = Reflect.get(objsRes, service.name + 'Result')
+                  Reflect.defineProperty(auxObj, service.array_types[0], {
+                    value: [],
+                    writable: true
+                  })
+                }
+                whenFetched(objsRes)
+              } else {
+                whenErr(objsRes.mensaje)
+              }
+            } else {
+              whenFetched(objsRes)
+            }
           }
         }
-      }
-    })
+      })
+  })
 }
 
 FacadeClient.SoapWrap = (
