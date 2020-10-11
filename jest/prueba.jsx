@@ -1,19 +1,19 @@
-const { renderIntoDocument } = require("react-dom/test-utils")
+const OnePromise = (a, b, c) => {
+  const s = a + b
 
-let OnePromise = (a, b, c) => {
-  let s = a + b
-
-  return new Promise((resolver,rechazar) => {
-    if (c == s) {
-      resolver('Success')
+  return new Promise((resolve, reject) => {
+    if (c === s) {
+      resolve('Success')
     } else {
-      rechazar('Failed')
+      reject(new Error('Failed'))
     }
   })
-} 
+}
 
-OnePromise(1, 2, 3).then((message) => {
-  console.log('This is in the then ' + message)
-} ).catch((message) => {
-  console.log('This is in the catch ' + message)
-})
+OnePromise(1, 2, 3)
+  .then((message) => {
+    console.log('This is in the then ' + message)
+  })
+  .catch((message) => {
+    console.log('This is in the catch ' + message)
+  })

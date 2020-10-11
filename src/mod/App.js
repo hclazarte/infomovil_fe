@@ -69,12 +69,13 @@ class App extends React.Component {
 
       let parametros = { OrdenarPor: 'DESCRIPCION', mensaje: '' }
       let ejemplo = { ID_CDD: new_ciudad.ID }
-      FacadeClient.RunService(
+      FacadeClient.RunSrvPromise(
         FacadeClient.Services.UsRecuperaTablaBuscarCodigos_comercio,
         parametros,
         ejemplo,
-        undefined,
-        (obj) => {
+        undefined
+      )
+        .then((obj) => {
           obj.UsRecuperaTablaBuscarCodigos_comercioResult.TablaBuscarRow.unshift(
             { ID: '0', DESCRIPCION: 'Todas las Categorías' }
           )
@@ -86,12 +87,13 @@ class App extends React.Component {
 
           let parametros = { mensaje: '' }
           let ejemplo = { ID_CDD: new_ciudad.ID }
-          FacadeClient.RunService(
+          FacadeClient.RunSrvPromise(
             FacadeClient.Services.UsRecuperaTablaBuscarZonasActivas,
             parametros,
             ejemplo,
-            undefined,
-            (obj) => {
+            undefined
+          )
+            .then((obj) => {
               obj.UsRecuperaTablaBuscarZonasActivasResult.TablaBuscarRow.unshift(
                 { ID: '0', DESCRIPCION: 'Todas las Zonas' }
               )
@@ -103,8 +105,8 @@ class App extends React.Component {
                 txt_error: '',
                 zna_id: '0'
               })
-            },
-            (errMsg) => {
+            })
+            .catch((errMsg) => {
               // error al recuperar las zonas activas
               if (errMsg === 'Negocio: No existen datos para la consulta') {
                 this.setState({
@@ -120,10 +122,9 @@ class App extends React.Component {
                   txt_error: errMsg
                 })
               }
-            }
-          )
-        },
-        (errMsg) => {
+            })
+        })
+        .catch((errMsg) => {
           // error al recuperar codigos de comercio
           if (errMsg === 'Negocio: No existen datos para la consulta') {
             this.setState({
@@ -144,8 +145,7 @@ class App extends React.Component {
             redirect: true,
             txt_error: errMsg
           })
-        }
-      )
+        })
     }
 
     this.onZonaChanged = (new_zna_id) => {
@@ -302,12 +302,13 @@ class App extends React.Component {
       query_val = unescape(paths[1]).split('-').join(' ')
     }
     let parametros = { mensaje: '', strCiudad: query_val }
-    FacadeClient.RunService(
+    FacadeClient.RunSrvPromise(
       FacadeClient.Services.UsRecuperaCiudad,
       parametros,
       null,
-      undefined,
-      (obj) => {
+      undefined
+    )
+      .then((obj) => {
         this.setState({ ciudad: obj.UsRecuperaCiudadResult.Ciudade[0] })
         if (
           obj.UsRecuperaCiudadResult.Ciudade[0].CIUDAD.toLowerCase() ===
@@ -317,24 +318,26 @@ class App extends React.Component {
           paths.shift()
         }
         let parametros = { mensaje: '', OrdenarPor: 'CIUDAD' }
-        FacadeClient.RunService(
+        FacadeClient.RunSrvPromise(
           FacadeClient.Services.UsRecuperaTodosCiudades,
           parametros,
           null,
-          undefined,
-          (obj) => {
+          undefined
+        )
+          .then((obj) => {
             this.setState({
               ciudades: obj.UsRecuperaTodosCiudadesResult.Ciudade
             })
 
             let parametros = { OrdenarPor: 'DESCRIPCION', mensaje: '' }
             let ejemplo = { ID_CDD: this.state.ciudad.ID }
-            FacadeClient.RunService(
+            FacadeClient.RunSrvPromise(
               FacadeClient.Services.UsRecuperaTablaBuscarZonasActivas,
               parametros,
               ejemplo,
-              undefined,
-              (obj) => {
+              undefined
+            )
+              .then((obj) => {
                 if (paths.length > 0) {
                   query_val = unescape(paths[0]).split('-').join(' ')
                 }
@@ -361,12 +364,13 @@ class App extends React.Component {
 
                 let parametros = { mensaje: '' }
                 let ejemplo = { ID_CDD: this.state.ciudad.ID }
-                FacadeClient.RunService(
+                FacadeClient.RunSrvPromise(
                   FacadeClient.Services.UsRecuperaTablaBuscarCodigos_comercio,
                   parametros,
                   ejemplo,
-                  undefined,
-                  (obj) => {
+                  undefined
+                )
+                  .then((obj) => {
                     if (paths.length > 0) {
                       query_val = unescape(paths[0]).split('-').join(' ')
                     }
@@ -412,18 +416,17 @@ class App extends React.Component {
                       txt_error: ''
                     })
                     this.loadSearch(0)
-                  },
-                  (errMsg) => {
+                  })
+                  .catch((errMsg) => {
                     // error al recuperar las zonas activas
                     this.setState({
                       lockScreen: 'unlockScreen',
                       redirect: true,
                       txt_error: errMsg
                     })
-                  }
-                )
-              },
-              (errMsg) => {
+                  })
+              })
+              .catch((errMsg) => {
                 // error al recuperar codigos de comercio
                 if (errMsg === 'Negocio: No existen datos para la consulta') {
                   this.setState({
@@ -444,28 +447,25 @@ class App extends React.Component {
                   redirect: true,
                   txt_error: errMsg
                 })
-              }
-            )
-          },
-          (errMsg) => {
+              })
+          })
+          .catch((errMsg) => {
             // Error al reuperar ciudades
             this.setState({
               lockScreen: 'unlockScreen',
               redirect: true,
               txt_error: errMsg
             })
-          }
-        )
-      },
-      (errMsg) => {
+          })
+      })
+      .catch((errMsg) => {
         // Error al recuperar ciudad
         this.setState({
           lockScreen: 'unlockScreen',
           redirect: true,
           txt_error: errMsg
         })
-      }
-    )
+      })
   }
 
   componentWillUnmount() {
@@ -498,12 +498,13 @@ class App extends React.Component {
         GruposDe: this.gr_tam.toString(),
         Grupo: this.gr_aux.toString()
       }
-      FacadeClient.RunService(
+      FacadeClient.RunSrvPromise(
         FacadeClient.Services.UsBuscaComercios,
         parametros,
         null,
-        undefined,
-        (obj) => {
+        undefined
+      )
+        .then((obj) => {
           if (this.gr_aux === 1) {
             this.setState({ comercios: obj })
           } else {
@@ -515,11 +516,10 @@ class App extends React.Component {
             this.setState({ comercios: aux_obj })
           }
           this.grupo = this.gr_aux
-        },
-        (errMsg) => {
+        })
+        .catch((errMsg) => {
           console.log('Error al recuperar comercios ' + errMsg)
-        }
-      )
+        })
     }
   }
 

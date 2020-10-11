@@ -22,7 +22,7 @@ export var FacadeClient = {
   }
 }
 
-FacadeClient.RunServicePromise = (
+FacadeClient.RunSrvPromise = (
   service,
   parameters,
   ejemplo,
@@ -38,7 +38,7 @@ FacadeClient.RunServicePromise = (
   const hd = new window.Headers()
   hd.append('Content-Type', 'text/xml; charset=utf-8')
 
-  return new Promise((whenFetched, whenErr) => {
+  return new Promise((resolve, reject) => {
     window
       .fetch(FacadeClient.baseUrl + '?op=' + service.name, {
         method: 'POST',
@@ -56,7 +56,7 @@ FacadeClient.RunServicePromise = (
         if (
           xmlText === 'Error: no se encuentra el servidor, por favor reintente'
         ) {
-          whenErr(xmlText)
+          reject(new Error(xmlText))
         } else {
           const parser = new window.DOMParser()
           const xmlDoc = parser.parseFromString(xmlText, 'text/xml')
@@ -67,7 +67,7 @@ FacadeClient.RunServicePromise = (
           const objsRes = FacadeClient.Deserialize({}, response, service)
 
           if (objsRes.mensaje === undefined) {
-            whenErr('Error: no se reconoce la respuesta del servidor')
+            reject(new Error('Error: no se reconoce la respuesta del servidor'))
           } else {
             if (objsRes.mensaje !== '') {
               if (
@@ -91,12 +91,12 @@ FacadeClient.RunServicePromise = (
                     writable: true
                   })
                 }
-                whenFetched(objsRes)
+                resolve(objsRes)
               } else {
-                whenErr(objsRes.mensaje)
+                reject(new Error(objsRes.mensaje))
               }
             } else {
-              whenFetched(objsRes)
+              resolve(objsRes)
             }
           }
         }
