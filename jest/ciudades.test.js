@@ -3,10 +3,10 @@ const fetch = require('node-fetch')
 global.Headers = fetch.Headers
 global.fetch = fetch
 
-it('Ciudad Simple ', () => {
-  let parametros = { mensaje: '', strCiudad: 'La Paz' }
+test('Ciudad Simple ', () => {
+  const parametros = { mensaje: '', strCiudad: 'La Paz' }
 
-  FacadeClient.RunSrvPromise(
+  return FacadeClient.RunSrvPromise(
     FacadeClient.Services.UsRecuperaCiudad,
     parametros,
     null,
@@ -20,10 +20,10 @@ it('Ciudad Simple ', () => {
     })
 })
 
-it('Ciudad Con guiones', () => {
-  let parametros = { mensaje: '', strCiudad: 'Santa-Cruz' }
+test('Ciudad Con guiones ', () => {
+  const parametros = { mensaje: '', strCiudad: 'Santa Cruz' }
 
-  FacadeClient.RunSrvPromise(
+  return FacadeClient.RunSrvPromise(
     FacadeClient.Services.UsRecuperaCiudad,
     parametros,
     null,
@@ -37,10 +37,10 @@ it('Ciudad Con guiones', () => {
     })
 })
 
-it('Ciudad Caracter especiales (acento)', () => {
-  let parametros = { mensaje: '', strCiudad: 'Potosí' }
+test('Ciudad Caracter especiales; acento ', () => {
+  const parametros = { mensaje: '', strCiudad: 'Potosí' }
 
-  FacadeClient.RunSrvPromise(
+  return FacadeClient.RunSrvPromise(
     FacadeClient.Services.UsRecuperaCiudad,
     parametros,
     null,
@@ -52,15 +52,12 @@ it('Ciudad Caracter especiales (acento)', () => {
     .catch((e) => {
       console.error(e)
     })
-    .catch((e) => {
-      console.error(e)
-    })
 })
 
-it('Ciudad Mayúsculas y minusculas mezcladas ', () => {
-  let parametros = { mensaje: '', strCiudad: 'cOCHABAMBA' }
+test('Ciudad Mayúsculas y minusculas mezcladas ', () => {
+  const parametros = { mensaje: '', strCiudad: 'cOCHABAMBA' }
 
-  FacadeClient.RunSrvPromise(
+  return FacadeClient.RunSrvPromise(
     FacadeClient.Services.UsRecuperaCiudad,
     parametros,
     null,
@@ -68,6 +65,25 @@ it('Ciudad Mayúsculas y minusculas mezcladas ', () => {
   )
     .then((obj) => {
       expect(obj.UsRecuperaCiudadResult.Ciudade[0].CIUDAD).toBe('Cochabamba')
+    })
+    .catch((e) => {
+      console.error(e)
+    })
+})
+
+test('Ciudades Recupera todas ', () => {
+  const parametros = { mensaje: '', OrdenarPor: 'CIUDAD' }
+
+  return FacadeClient.RunSrvPromise(
+    FacadeClient.Services.UsRecuperaTodosCiudades,
+    parametros,
+    null,
+    undefined
+  )
+    .then((obj) => {
+      expect(obj.UsRecuperaTodosCiudadesResult.Ciudade.length).toBeGreaterThan(
+        0
+      )
     })
     .catch((e) => {
       console.error(e)
