@@ -23,27 +23,6 @@ test('Codigos de comercio simple ', () => {
     })
 })
 
-test('Ninguna código de comercio debe contener guiones - o / ', () => {
-  const parametros = {
-    mensaje: '',
-    Clausula: "DESCRIPCION LIKE('%-%') OR DESCRIPCION LIKE('%-%')",
-    ConnStr: 'User ID=INFOMOVIL;Password=INFO'
-  }
-
-  return FacadeClient.RunSrvPromise(
-    FacadeClient.Services.CuentaTipos_comercioQue,
-    parametros,
-    null,
-    undefined
-  )
-    .then((obj) => {
-      expect(obj.CuentaTipos_comercioQueResult).toBe('0')
-    })
-    .catch((e) => {
-      console.error(e)
-    })
-})
-
 test('Ningún código de comercio debe contener guiones - o / ', () => {
   const parametros = {
     mensaje: '',
