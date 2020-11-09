@@ -28,7 +28,7 @@ test('Búsqueda con letras minúsculas ', () => {
     })
 })
 
-test('Bùsqueda filtrado por laboratorio ', () => {
+test('Búsqueda filtrado por laboratorio ', () => {
   const parametros = {
     ruta: '/Bolivia/La-Paz/laboratorio',
     cantidad: 0,
@@ -53,9 +53,9 @@ test('Bùsqueda filtrado por laboratorio ', () => {
     })
 })
 
-test('Búsqueda Santa Cruz Taxi ', () => {
+test('Búsqueda Santa Cruz Taxi sin guion ', () => {
   const parametros = {
-    ruta: '/Bolivia/Santa-Cruz/taxi',
+    ruta: '/Bolivia/Santa Cruz/taxi',
     cantidad: 0,
     mensaje: '',
     OrdenarPor: '',

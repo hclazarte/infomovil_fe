@@ -1,5 +1,5 @@
 export var FacadeClient = {
-  baseUrl: 'https://infomovil.shop/fachada/servicios.asmx',
+  baseUrl: 'https://infomovil.com.bo/fachada/servicios.asmx',
   // baseUrl: 'http://192.168.1.205/Fachada/Servicios.asmx',
   // baseUrl: '/fachada/servicios.asmx',
   xmlns: 'http://infomovil.com.bo/',
@@ -18,7 +18,13 @@ export var FacadeClient = {
       array_types: ['TablaBuscarRow']
     },
     UsCuentaBusqueda: { name: 'UsCuentaBusqueda' },
-    UsBuscaComercios: { name: 'UsBuscaComercios', array_types: ['Comercio'] }
+    UsBuscaComercios: { name: 'UsBuscaComercios', array_types: ['Comercio'] },
+    CuentaZonasQue: { name: 'CuentaZonasQue' },
+    CuentaTipos_comercioQue: { name: 'CuentaTipos_comercioQue' },
+    CuentaCodigos_comercioQue: { name: 'CuentaCodigos_comercioQue' },
+    GrabaZona: { name: 'GrabaZona' },
+    GrabaCodigo_comercio: { name: 'GrabaCodigo_comercio' },
+    GrabaTipo_comercio: { name: 'GrabaTipo_comercio' }
   }
 }
 
@@ -141,21 +147,27 @@ FacadeClient.Serialize = (businessObj) => {
     }
   })
   Object.entries(businessObj).forEach((entry) => {
-    if (entry[0] !== 'xmlns') {
-      if (_xmlns_ === '') {
-        serie += '<' + entry[0] + '>' + entry[1] + '</' + entry[0] + '>\n'
-      } else {
-        serie +=
-          '<' +
-          entry[0] +
-          ' xmlns="' +
-          _xmlns_ +
-          '">' +
-          entry[1] +
-          '</' +
-          entry[0] +
-          '>\n'
+    if (typeof entry[1] !== 'object') {
+      if (entry[0] !== 'xmlns') {
+        if (_xmlns_ === '') {
+          serie += '<' + entry[0] + '>' + entry[1] + '</' + entry[0] + '>\n'
+        } else {
+          serie +=
+            '<' +
+            entry[0] +
+            ' xmlns="' +
+            _xmlns_ +
+            '">' +
+            entry[1] +
+            '</' +
+            entry[0] +
+            '>\n'
+        }
       }
+    } else {
+      serie += '<' + entry[0] + '>\n'
+      serie += FacadeClient.Serialize(entry[1])
+      serie += '</' + entry[0] + '>\n'
     }
   })
   return serie
