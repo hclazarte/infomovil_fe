@@ -20,6 +20,7 @@ test('Zonas activas de La Paz mayor a cero ', () => {
     })
     .catch((e) => {
       console.error(e)
+      expect(true).toBe(false)
     })
 })
 
@@ -41,6 +42,7 @@ test('Ninguna zonas debe contener guiones - o / ', () => {
     })
     .catch((e) => {
       console.error(e)
+      expect(true).toBe(false)
     })
 })
 

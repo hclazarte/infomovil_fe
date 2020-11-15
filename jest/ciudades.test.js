@@ -17,6 +17,7 @@ test('Ciudad Simple ', () => {
     })
     .catch((e) => {
       console.error(e)
+      expect(true).toBe(false)
     })
 })
 
@@ -34,6 +35,7 @@ test('Ciudad Con guiones ', () => {
     })
     .catch((e) => {
       console.error(e)
+      expect(true).toBe(false)
     })
 })
 
@@ -51,6 +53,7 @@ test('Ciudad Caracter especiales; acento ', () => {
     })
     .catch((e) => {
       console.error(e)
+      expect(true).toBe(false)
     })
 })
 
@@ -68,6 +71,7 @@ test('Ciudad Mayúsculas y minusculas mezcladas ', () => {
     })
     .catch((e) => {
       console.error(e)
+      expect(true).toBe(false)
     })
 })
 
@@ -87,5 +91,6 @@ test('Ciudades Recupera todas ', () => {
     })
     .catch((e) => {
       console.error(e)
+      expect(true).toBe(false)
     })
 })

@@ -25,6 +25,7 @@ test('Búsqueda con letras minúsculas ', () => {
     })
     .catch((e) => {
       console.error(e)
+      expect(true).toBe(false)
     })
 })
 
@@ -50,6 +51,7 @@ test('Búsqueda filtrado por laboratorio ', () => {
     })
     .catch((e) => {
       console.error(e)
+      expect(true).toBe(false)
     })
 })
 
@@ -75,5 +77,32 @@ test('Búsqueda Santa Cruz Taxi sin guion ', () => {
     })
     .catch((e) => {
       console.error(e)
+      expect(true).toBe(false)
+    })
+})
+
+test('Búsqueda Asesores en Cochabamba ', () => {
+  const parametros = {
+    ruta: '/Bolivia/Cochabamba/Asesores',
+    cantidad: 0,
+    mensaje: '',
+    OrdenarPor: '',
+    GruposDe: 1,
+    Grupo: 1
+  }
+
+  return FacadeClient.RunSrvPromise(
+    FacadeClient.Services.UsBuscaComercios,
+    parametros,
+    null,
+    undefined
+  )
+    .then((obj) => {
+      expect(parseInt(obj.cantidad)).toBeGreaterThan(0)
+      expect(obj.UsBuscaComerciosResult.Comercio.length).toBe(3)
+    })
+    .catch((e) => {
+      console.error(e)
+      expect(true).toBe(false)
     })
 })
