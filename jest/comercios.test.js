@@ -99,7 +99,7 @@ test('Búsqueda Asesores en Cochabamba ', () => {
   )
     .then((obj) => {
       expect(parseInt(obj.cantidad)).toBeGreaterThan(0)
-      expect(obj.UsBuscaComerciosResult.Comercio.length).toBe(3)
+      expect(obj.UsBuscaComerciosResult.Comercio.length).toBe(1)
     })
     .catch((e) => {
       console.error(e)
