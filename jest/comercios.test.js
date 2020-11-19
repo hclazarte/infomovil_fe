@@ -106,3 +106,49 @@ test('Búsqueda Asesores en Cochabamba ', () => {
       expect(true).toBe(false)
     })
 })
+
+test('Compara cantidad de hoteles en Tarija con espacio y sin espacio ', () => {
+  const parametros = {
+    ruta: '/Bolivia/Tarija/hotel',
+    cantidad: 0,
+    mensaje: '',
+    OrdenarPor: '',
+    GruposDe: 1,
+    Grupo: 1
+  }
+
+  return FacadeClient.RunSrvPromise(
+    FacadeClient.Services.UsBuscaComercios,
+    parametros,
+    null,
+    undefined
+  )
+    .then((obj) => {
+      let can = parseInt(obj.cantidad)
+      const parametros = {
+        ruta: '/Bolivia/Tarija/hotel ',
+        cantidad: 0,
+        mensaje: '',
+        OrdenarPor: '',
+        GruposDe: 1,
+        Grupo: 1
+      }
+      return FacadeClient.RunSrvPromise(
+        FacadeClient.Services.UsBuscaComercios,
+        parametros,
+        null,
+        undefined
+      )
+        .then((obj) => {
+          expect(parseInt(obj.cantidad)).toBe(can)
+        })
+        .catch((e) => {
+          console.error(e)
+          expect(true).toBe(false)
+        })
+    })
+    .catch((e) => {
+      console.error(e)
+      expect(true).toBe(false)
+    })
+})
