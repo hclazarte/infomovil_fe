@@ -67,7 +67,7 @@ class App extends React.Component {
     this.onCiudadChanged = (new_ciudad) => {
       this.setState({ ciudad: new_ciudad, lockScreen: 'lockScreen' })
 
-      let parametros = { OrdenarPor: 'DESCRIPCION', mensaje: '' }
+      let parametros = { OrdenarPor: 'ORDEN', mensaje: '' }
       let ejemplo = { ID_CDD: new_ciudad.ID }
       FacadeClient.RunSrvPromise(
         FacadeClient.Services.UsRecuperaTablaBuscarCodigos_comercio,
@@ -362,7 +362,7 @@ class App extends React.Component {
                   zna_id: aux_id
                 })
 
-                let parametros = { mensaje: '' }
+                let parametros = { OrdenarPor: 'ORDEN', mensaje: '' }
                 let ejemplo = { ID_CDD: this.state.ciudad.ID }
                 FacadeClient.RunSrvPromise(
                   FacadeClient.Services.UsRecuperaTablaBuscarCodigos_comercio,
