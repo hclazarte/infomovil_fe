@@ -152,3 +152,29 @@ test('Compara cantidad de hoteles en Tarija con espacio y sin espacio ', () => {
       expect(true).toBe(false)
     })
 })
+
+test('Nombre largo en Pando ', () => {
+  const parametros = {
+    ruta: '/bolivia/cobija/gerson-enrique-chavez-valdivia',
+    cantidad: 0,
+    mensaje: '',
+    OrdenarPor: '',
+    GruposDe: 1,
+    Grupo: 1
+  }
+
+  return FacadeClient.RunSrvPromise(
+    FacadeClient.Services.UsBuscaComercios,
+    parametros,
+    null,
+    undefined
+  )
+    .then((obj) => {
+      expect(parseInt(obj.cantidad)).toBeGreaterThan(0)
+      expect(obj.UsBuscaComerciosResult.Comercio.length).toBe(1)
+    })
+    .catch((e) => {
+      console.error(e)
+      expect(true).toBe(false)
+    })
+})
