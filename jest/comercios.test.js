@@ -178,3 +178,29 @@ test('Nombre largo en Pando ', () => {
       expect(true).toBe(false)
     })
 })
+
+test('textos con palabra de un caracter ', () => {
+  const parametros = {
+    ruta: '/bolivia/cochabamba/productos-ecologicos-naturaleza-s.a.-pensa',
+    cantidad: 0,
+    mensaje: '',
+    OrdenarPor: '',
+    GruposDe: 1,
+    Grupo: 1
+  }
+
+  return FacadeClient.RunSrvPromise(
+    FacadeClient.Services.UsBuscaComercios,
+    parametros,
+    null,
+    undefined
+  )
+    .then((obj) => {
+      expect(parseInt(obj.cantidad)).toBeGreaterThan(0)
+      expect(obj.UsBuscaComerciosResult.Comercio.length).toBe(1)
+    })
+    .catch((e) => {
+      console.error(e)
+      expect(true).toBe(false)
+    })
+})
